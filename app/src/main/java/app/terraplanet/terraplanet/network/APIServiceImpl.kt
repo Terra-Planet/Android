@@ -178,8 +178,8 @@ class APIServiceImpl {
     fun sendPreview(send: Send): Single<Send> {
         val map = mutableMapOf<String, String>()
         map[FEE_TOKEN] = gas.id
-        map[TOKEN] = send.token.id
-        map[AMOUNT] = send.amount
+        map[TOKEN] = send.coin.denom.id
+        map[AMOUNT] = "${send.amount}"
         map[DST_ADDR] = send.address
         map[MNEMONIC] = wallet.mnemonic
         map[NETWORK] = network.id
@@ -193,7 +193,6 @@ class APIServiceImpl {
                 client.sendPreview(params)
             }
             .map {
-                println("CONSOLE: $it")
                 val json = JSONObject(it)
                 val authInfo = json[AUTH_INFO] as JSONObject
                 val feeInfo = JSONObject(authInfo[FEE] as String)
@@ -208,8 +207,8 @@ class APIServiceImpl {
     fun send(send: Send): Single<Send> {
         val map = mutableMapOf<String, String>()
         map[FEE_TOKEN] = gas.id
-        map[TOKEN] = send.token.id
-        map[AMOUNT] = send.amount
+        map[TOKEN] = send.coin.denom.id
+        map[AMOUNT] = "${send.amount}"
         map[DST_ADDR] = send.address
         map[MNEMONIC] = wallet.mnemonic
         map[NETWORK] = network.id

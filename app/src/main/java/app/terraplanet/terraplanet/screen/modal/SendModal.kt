@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,7 +33,6 @@ import androidx.compose.ui.window.DialogProperties
 import app.terraplanet.terraplanet.R
 import app.terraplanet.terraplanet.model.Coin
 import app.terraplanet.terraplanet.model.Send
-import app.terraplanet.terraplanet.model.Swap
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.network.Denom
 import app.terraplanet.terraplanet.ui.theme.*
@@ -61,7 +59,7 @@ fun SendModal(
     val wallet = model.walletState.collectAsState()
 
     var coin by remember { mutableStateOf(wallet.value.coins.first()) }
-    var totalBalance by remember { mutableStateOf(coin.amount) }
+    var totalBalance by remember { mutableStateOf(if (coin.denom == Denom.LUNA) coin.quantity else coin.amount) }
     fun show() = scope.launch { state.show() }
     fun hide() = scope.launch { state.hide() }
 
@@ -94,7 +92,7 @@ fun SendModal(
                                     text = { Text(wallet.value.coins[it].denom.label, fontWeight = FontWeight.Bold) },
                                     modifier = Modifier.clickable {
                                         coin = wallet.value.coins[it]
-                                        totalBalance = coin.amount
+                                        totalBalance = if (coin.denom == Denom.LUNA) coin.quantity else coin.amount
                                         amount.toDoubleOrNull()?.let { parse ->
                                             if (parse > totalBalance) {
                                                 amount = "$totalBalance"
@@ -194,7 +192,7 @@ fun SendModal(
                         Text(totalBalance.roundDecimal(if (coin.denom == Denom.UST) 2 else 4))
                         HSpacer(15)
                         Text("Max", fontSize = 18.sp, color = MainBlue, modifier = Modifier.clickable {
-                            amount = totalBalance.roundDecimal(if (coin.denom == Denom.UST) 2 else 4)
+                            amount = "$totalBalance"
                         })
                     }
                     VSpacer(10)
@@ -213,8 +211,9 @@ fun SendModal(
                                             val input = it.replace(",", "")
                                             val value = input.toDoubleOrNull()
                                             value?.let { parse ->
-                                                amount = if (parse > coin.amount) {
-                                                    "${coin.amount}"
+                                                val maxValue = if (coin.denom == Denom.LUNA) coin.quantity else coin.amount
+                                                amount = if (parse > maxValue) {
+                                                    "$maxValue"
                                                 } else {
                                                     "$parse"
                                                 }
@@ -230,7 +229,14 @@ fun SendModal(
                         Button(
                             onClick = {
                                 focusManager.clearFocus()
-                                send = Send(model.fee, coin.denom, amount, 0.0, address, memo)
+                                send = Send(
+                                    model.getGas(),
+                                    wallet.value.coins.find { it.denom == model.getGas() },
+                                    coin, amount.toDouble(),
+                                    0.0,
+                                    address,
+                                    memo
+                                )
                                 onSubmit(send!!)
                             },
                             colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
@@ -339,7 +345,7 @@ private fun CoinSelector(coin: Coin) {
 
 @Composable
 private fun ShowSwapDialog(
-    send: Send?,
+    sendData: Send?,
     show: Boolean,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
@@ -350,21 +356,34 @@ private fun ShowSwapDialog(
     val wallet = api.getWallet(context)
 
     if (show) {
-        send?.let {
+        sendData?.let { send ->
+            var haveBalance = false
+            send.gasCoin?.let {  fee ->
+                haveBalance = if (send.coin.denom == fee.denom) {
+                    val left = if (fee.denom == Denom.LUNA) fee.quantity - send.amount else fee.amount - send.amount
+                    left >= send.fee
+                } else {
+                    val left = if (fee.denom == Denom.LUNA) fee.quantity - send.fee else fee.amount - send.fee
+                    left >= send.fee
+                }
+            }
+
             AlertDialog(
                 onDismissRequest = onConfirm,
                 properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
                 confirmButton = {
-                    TextButton(onClick = onConfirm)
-                    { Text(text = "Sign it!", fontSize = 18.sp) }
+                    if (haveBalance) {
+                        ConfirmButton(onConfirm)
+                    } else {
+                        DismissButton(onDismiss)
+                    }
                 },
-                dismissButton = {
-                    TextButton(onClick = onDismiss)
-                    { Text(text = "Cancel", fontSize = 18.sp) }
-                },
+                dismissButton = if (haveBalance) (
+                        { DismissButton(onDismiss) }
+                        ) else null,
                 title = {
                     Text(
-                        "SEND",
+                        if (haveBalance) "SEND" else "ATTENTION",
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -372,10 +391,11 @@ private fun ShowSwapDialog(
                 },
                 text = {
                     Text(
-                        text =  "From: ${wallet?.address}\n\n" +
+                        text = if (haveBalance) "From: ${wallet?.address}\n\n" +
                                 "To: ${send.address}\n\n" +
                                 "Amount: ${send.amount}\n\n" +
-                                "Fee: ${send.fee} ${send.token.label}",
+                                "Fee: ${send.fee} ${send.gas.label}"
+                        else "You don't have enough ${send.gas.label} balance to pay fees and perform this action.",
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 18.sp
@@ -384,4 +404,16 @@ private fun ShowSwapDialog(
             )
         }
     }
+}
+
+@Composable
+private fun ConfirmButton(onConfirm: () -> Unit) {
+    TextButton(onClick = onConfirm)
+    { Text(text = "Sign it!", fontSize = 18.sp) }
+}
+
+@Composable
+private fun DismissButton(onDismiss: () -> Unit) {
+    TextButton(onClick = onDismiss)
+    { Text(text = "Cancel", fontSize = 18.sp) }
 }

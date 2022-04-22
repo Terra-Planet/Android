@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,7 +41,6 @@ import app.terraplanet.terraplanet.ui.theme.MainColor
 import app.terraplanet.terraplanet.ui.theme.bgColor
 import app.terraplanet.terraplanet.ui.theme.colorAware
 import app.terraplanet.terraplanet.ui.util.*
-import app.terraplanet.terraplanet.util.roundDecimal
 
 @Composable
 fun SwapModal(
@@ -236,8 +234,9 @@ private fun SimpleCoinItem(
             Text(coin.denom.label, color = colorAware(), fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
         Box(modifier = Modifier.weight(1f))
+        HSpacer(10)
         BasicInput(
-            value = if(amount == 0.0) "0" else amount.roundDecimal(if (coin.denom == Denom.UST) 2 else 6),
+            value = if(amount == 0.0) "0" else "$amount",
             onValueChange = onValueChange,
             keyboardType = KeyboardType.Decimal,
             color = colorAware()
@@ -271,7 +270,8 @@ private fun BasicInput(
             ),
             cursorBrush = SolidColor(colorAware()),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+            maxLines = 1
         )
     }
 }

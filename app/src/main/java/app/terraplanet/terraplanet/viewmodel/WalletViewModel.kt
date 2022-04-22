@@ -9,6 +9,7 @@ import app.terraplanet.terraplanet.model.Send
 import app.terraplanet.terraplanet.model.Swap
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.network.APIServiceImpl.Companion.LOG_E
+import app.terraplanet.terraplanet.network.Denom
 import app.terraplanet.terraplanet.network.Net
 import app.terraplanet.terraplanet.util.roundDecimal
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -18,15 +19,13 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.flow.*
 
-class WalletViewModel(app: Application): AndroidViewModel(app) {
+class WalletViewModel(val app: Application): AndroidViewModel(app) {
     private val api = APIServiceImpl()
     private val _walletState = MutableStateFlow(
-        WalletState(state = State.LOADING, "0.00", 0.0, 0.0, 0.0, listOf())
+        WalletState(state = State.LOADING, "0.00", 0.0, 0.0, Denom.UST, 0.0, listOf())
     )
-    private lateinit var disposable: Disposable
+    private var disposable: Disposable? = null
     private var network = MutableStateFlow(api.getNetwork(app.applicationContext))
-
-    var fee = api.getPayGas(app.applicationContext)
 
     val walletState: StateFlow<WalletState> get() = _walletState
 
@@ -34,6 +33,10 @@ class WalletViewModel(app: Application): AndroidViewModel(app) {
         network.onEach {
                 fetchWallet()
             }.launchIn(viewModelScope)
+    }
+
+    fun getGas(): Denom {
+        return api.getPayGas(app.applicationContext)
     }
 
     fun updateNetwork(net: Net) {
@@ -46,9 +49,10 @@ class WalletViewModel(app: Application): AndroidViewModel(app) {
         var rate = 0.0
         var lunaPrice = 1.0
         var amount = "0.00"
+        var gas = Denom.UST
 
         _walletState.update {
-            WalletState(State.LOADING, amount, earn, rate, lunaPrice, coins).copy()
+            WalletState(State.LOADING, amount, earn, rate, gas, lunaPrice, coins).copy()
         }
 
         disposable = Observable.fromSingle<Any> {
@@ -64,16 +68,21 @@ class WalletViewModel(app: Application): AndroidViewModel(app) {
                 coins.forEach { coin -> total += coin.amount }
                 amount = (total + earnBalance.amount.toDouble()).roundDecimal(2)
                 rate = market.rate
+                gas = api.getPayGas(app.applicationContext)
             }.observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    _walletState.update {WalletState(State.SUCCESS, amount, earn, rate, lunaPrice, coins).copy() }
+                    _walletState.update {WalletState(State.SUCCESS, amount, earn, rate, gas, lunaPrice, coins).copy() }
                 }, {
-                    _walletState.update {WalletState(State.FAILED, amount, earn, rate, lunaPrice, coins).copy() }
+                    _walletState.update {WalletState(State.FAILED, amount, earn, rate, gas, lunaPrice, coins).copy() }
                 })
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({}, {})
+    }
+
+    fun userBalance() {
+        api.getBalance()
     }
 
     fun anchorDeposit(amount: Double, onDone: () -> Unit, onError: () -> Unit) {
@@ -144,6 +153,7 @@ data class WalletState(
     val amount: String,
     val earn: Double,
     val rate: Double,
+    val gas: Denom,
     val lunaPrice: Double,
     val coins: List<Coin>
 )

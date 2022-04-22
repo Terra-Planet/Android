@@ -95,7 +95,10 @@ fun EarnModal(coin: Coin,
             Row {
                 Text("Amount:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Expandable()
-                Text("Balance: ${if (deposit) coin.amount.roundDecimal(4) else earn.roundDecimal(4)}", fontSize = 18.sp)
+                Text(
+                    "Balance: ${if (deposit) coin.amount.roundDecimal(4) else earn.roundDecimal(4)}",
+                    fontSize = 18.sp
+                )
                 HSpacer(10)
                 Text(
                     text = "Max.",
@@ -104,7 +107,7 @@ fun EarnModal(coin: Coin,
                     modifier = Modifier.clickable {
                         amount = if (deposit)
                             if (coin.amount > 1.0) coin.amount - 1.0 else coin.amount
-                            else if (earn > 1.0) earn - 1.0 else earn })
+                            else earn })
             }
             VSpacer(4)
             Surface(
@@ -148,7 +151,7 @@ fun EarnModal(coin: Coin,
                 colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(25),
-                enabled = amount >= 1.0
+                enabled = if (deposit) amount >= 1.0 else amount >= 0.5 && coin.amount >= 0.5
             ) {
                 Text(
                     text = selectedSegment.uppercase(),
@@ -156,10 +159,20 @@ fun EarnModal(coin: Coin,
                     fontWeight = FontWeight.Bold,
                 )
             }
-            if (selectedSegment == earnSegment.first()) {
+            if (deposit) {
                 VSpacer(10)
                 Text(
                     "We suggest you to keep 1 UST at least to pay gas. Remember that in the Earn Section the gas will be paid always in UST",
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+            }
+
+            if (!deposit && coin.amount < 0.5) {
+                VSpacer(10)
+                Text(
+                    "You don't have enough UST to pay fees and Withdraw your earnings. Please, deposit more funds or" +
+                            " select a lower amount.",
                     color = Color.Gray,
                     fontSize = 14.sp
                 )
@@ -195,7 +208,7 @@ private fun SimpleCoinItem(amount: Double, coin: Coin, onChangeValue: (String) -
         }
         Expandable()
         BasicInput(
-            value = if(amount == 0.0) "0" else amount.roundDecimal(2),
+            value = if(amount == 0.0) "0" else "$amount",
             onValueChange = onChangeValue,
             keyboardType = KeyboardType.Decimal,
             color = colorAware()
