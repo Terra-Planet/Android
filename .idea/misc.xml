@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../layout/compose-model-1649878411461.xml" value="0.2048141891891892" />
+        <entry key="../../../../../layout/compose-model-1649879333210.xml" value="0.4548736462093863" />
+        <entry key="app/src/main/res/drawable/icon_deposit.xml" value="0.112" />
+        <entry key="app/src/main/res/drawable/icon_qr_code.xml" value="0.101" />
+        <entry key="app/src/main/res/drawable/icon_receive.xml" value="0.112" />
+        <entry key="app/src/main/res/drawable/icon_send.xml" value="0.112" />
+        <entry key="app/src/main/res/drawable/icon_swap.xml" value="0.112" />
+        <entry key="app/src/main/res/drawable/icon_withdraw.xml" value="0.112" />
+        <entry key="app/src/main/res/drawable/tab_settings.xml" value="0.112" />
+        <entry key="app/src/main/res/drawable/tab_transactions.xml" value="0.112" />
+        <entry key="app/src/main/res/drawable/tab_wallet.xml" value="0.112" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1025" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1025" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
