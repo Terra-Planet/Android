@@ -1,5 +1,10 @@
 package app.terraplanet.terraplanet.screen.modal
 
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,6 +40,7 @@ import app.terraplanet.terraplanet.model.Coin
 import app.terraplanet.terraplanet.model.Send
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.network.Denom
+import app.terraplanet.terraplanet.screen.CameraActivity
 import app.terraplanet.terraplanet.ui.theme.*
 import app.terraplanet.terraplanet.ui.util.*
 import app.terraplanet.terraplanet.util.pasteFromClipboard
@@ -71,6 +77,17 @@ fun SendModal(
     var amount by remember { mutableStateOf("") }
     var memo: String? by remember { mutableStateOf(null) }
     var send: Send? by remember { mutableStateOf(null) }
+
+    val startForResult = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                intent?.let {
+                    address = it.getStringExtra(CameraActivity.RESULT) ?: ""
+                }
+            }
+        }
 
     BoxWithConstraints(
         modifier = Modifier.height(screenHeight)
@@ -157,12 +174,19 @@ fun SendModal(
                         ) {
                             Text(
                                 text = "Paste",
-                                color = MainColor,
-                                fontSize = 16.sp
+                                color = MainBlue,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
-                        IconButton(onClick = {}) {
-                            Icon(painter = painterResource(id = R.drawable.icon_qr_code), null, tint = MainColor)
+                        IconButton(onClick = {
+                            startForResult.launch(Intent(context, CameraActivity::class.java))
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_qr_code),
+                                tint = MainBlue,
+                                contentDescription = null
+                            )
                         }
                     }
                     VSpacer(30)
