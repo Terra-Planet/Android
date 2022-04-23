@@ -15,7 +15,6 @@ import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
@@ -26,6 +25,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import app.terraplanet.terraplanet.ui.theme.TerraPlanetTheme
+import app.terraplanet.terraplanet.ui.theme.isDark
 import app.terraplanet.terraplanet.util.QrCodeAnalyzer
 import java.lang.Exception
 
@@ -53,6 +53,8 @@ class CameraActivity : ComponentActivity() {
 @Composable
 fun CameraScreen(onResult: (String) -> Unit) {
     TerraPlanetTheme {
+
+        val isDarkMode = isDark()
 
         val context = LocalContext.current
         val lifeCycleOwner = LocalLifecycleOwner.current
@@ -91,7 +93,7 @@ fun CameraScreen(onResult: (String) -> Unit) {
 
                     imageAnalysis.setAnalyzer(
                         ContextCompat.getMainExecutor(context),
-                        QrCodeAnalyzer { result -> onResult(result) }
+                        QrCodeAnalyzer(isDarkMode) { result -> onResult(result) }
                     )
 
                     try {

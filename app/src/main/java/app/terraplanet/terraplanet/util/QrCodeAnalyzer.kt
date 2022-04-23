@@ -8,7 +8,10 @@ import com.google.zxing.common.HybridBinarizer
 import java.lang.Exception
 import java.nio.ByteBuffer
 
-class QrCodeAnalyzer(private val onCodeScanned: (String) -> Unit): ImageAnalysis.Analyzer {
+class QrCodeAnalyzer(
+    private val isDarkMode: Boolean,
+    private val onCodeScanned: (String) -> Unit
+): ImageAnalysis.Analyzer {
 
     private val imageFormat = listOf(
         ImageFormat.YUV_420_888,
@@ -30,7 +33,7 @@ class QrCodeAnalyzer(private val onCodeScanned: (String) -> Unit): ImageAnalysis
                 false
             )
 
-            val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
+            val binaryBitmap = BinaryBitmap(HybridBinarizer(if (isDarkMode) source.invert() else source))
             try {
                 val result = MultiFormatReader().apply {
                     setHints(

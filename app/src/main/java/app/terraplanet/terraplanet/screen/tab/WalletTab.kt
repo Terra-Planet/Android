@@ -433,7 +433,7 @@ fun RowScope.WalletAction(text: String, icon: Int, onClick: () -> Unit) {
         ) {
             Icon(painter = painterResource(id = icon), contentDescription = null, tint = Color.White)
             VSpacer(6)
-            Text(text, fontSize = 20.sp, color = Color.White)
+            Text(text, fontSize = 18.sp, color = Color.White)
         }
     }
 }
