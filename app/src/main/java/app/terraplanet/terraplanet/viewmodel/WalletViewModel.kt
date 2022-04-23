@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.*
 class WalletViewModel(val app: Application): AndroidViewModel(app) {
     private val api = APIServiceImpl()
     private val _walletState = MutableStateFlow(
-        WalletState(state = State.LOADING, "0.00", 0.0, 0.0, Denom.UST, 0.0, listOf())
+        WalletState(State.LOADING, "0.00", 0.0, 0.0, Denom.UST, 0.0, listOf())
     )
     private var disposable: Disposable? = null
     private var network = MutableStateFlow(api.getNetwork(app.applicationContext))

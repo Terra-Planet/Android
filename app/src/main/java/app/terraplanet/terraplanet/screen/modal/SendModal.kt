@@ -2,6 +2,7 @@ package app.terraplanet.terraplanet.screen.modal
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -42,6 +43,7 @@ import app.terraplanet.terraplanet.model.Send
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.network.Denom
 import app.terraplanet.terraplanet.screen.CameraActivity
+import app.terraplanet.terraplanet.screen.HomeActivity
 import app.terraplanet.terraplanet.ui.theme.*
 import app.terraplanet.terraplanet.ui.util.*
 import app.terraplanet.terraplanet.util.pasteFromClipboard
@@ -52,6 +54,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SendModal(
+    context: HomeActivity,
     model: WalletViewModel,
     isLoading: Boolean,
     showDialog: Boolean,
@@ -60,7 +63,6 @@ fun SendModal(
     onDismiss: () -> Unit,
     modal: ModalTransitionDialogHelper
 ) {
-    val context = LocalContext.current
     val scrollState = rememberScrollState()
     val state = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -265,7 +267,15 @@ fun SendModal(
                                     address,
                                     memo
                                 )
-                                onSubmit(send!!)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                    context.launchBiometric(context, "Authenticate to send transaction",
+                                        context.authenticationCallback(onSuccess = {
+                                            onSubmit(send!!)
+                                        })
+                                    )
+                                } else {
+                                    onSubmit(send!!)
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
                             shape = RoundedCornerShape(20),

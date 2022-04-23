@@ -1,5 +1,7 @@
 package app.terraplanet.terraplanet.screen.tab
 
+import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,16 +19,17 @@ import androidx.compose.ui.window.DialogProperties
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.network.Denom
 import app.terraplanet.terraplanet.network.Net
+import app.terraplanet.terraplanet.screen.HomeActivity
 import app.terraplanet.terraplanet.ui.theme.MainColor
 import app.terraplanet.terraplanet.ui.util.*
 import app.terraplanet.terraplanet.viewmodel.SettingsViewModel
 
 @Composable
-fun SettingsTab(settings: SettingsViewModel) {
+fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
     val api = APIServiceImpl()
     val scrollState = rememberScrollState()
     val showDialog: Boolean by settings.showDialog.collectAsState()
-    val context = LocalContext.current
+    val context = (activity as HomeActivity)
 
     Column(
         modifier = Modifier
@@ -71,7 +73,17 @@ fun SettingsTab(settings: SettingsViewModel) {
         }
         VSpacer(40)
         Button(
-            onClick = { settings.openDialog() },
+            onClick = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    context.launchBiometric(context, "Authenticate to show Seed Phrase",
+                        context.authenticationCallback(onSuccess = {
+                            settings.openDialog()
+                        })
+                    )
+                } else {
+                    settings.openDialog()
+                }
+            },
             colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(25)
@@ -126,8 +138,8 @@ private fun ShowSeedDialog(
                 TextButton(onClick = onConfirm)
                 { Text(text = "OK") }
             },
-            title = { Text("Your seed phrase is:") },
-            text = { Text(seedPhrase) }
+            title = { Text("Your seed phrase is:", fontSize = 18.sp, fontWeight = FontWeight.Bold) },
+            text = { Text(seedPhrase, fontSize = 16.sp) }
         )
     }
 }

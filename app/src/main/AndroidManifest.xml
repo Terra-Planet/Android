@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="app.terraplanet.terraplanet">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <application
         android:name=".BaseApplication"
@@ -15,7 +20,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.TerraPlanet">
+            android:theme="@style/Theme.TerraPlanet"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,26 +31,28 @@
         <activity
             android:name=".screen.InitActivity"
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".screen.InitWalletActivity"
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".screen.ImportWalletActivity"
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".screen.HomeActivity"
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".screen.CameraActivity"
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity" />
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
 
 </manifest>

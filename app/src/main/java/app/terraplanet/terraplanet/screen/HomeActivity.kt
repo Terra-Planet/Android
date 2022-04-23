@@ -1,8 +1,12 @@
 package app.terraplanet.terraplanet.screen
 
+import android.content.Context
+import android.hardware.biometrics.BiometricPrompt
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import app.terraplanet.terraplanet.nav.Screen
 import app.terraplanet.terraplanet.nav.SetupNavGraph
 import app.terraplanet.terraplanet.ui.theme.*
+import app.terraplanet.terraplanet.util.Biometrics
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class HomeActivity : ComponentActivity() {
@@ -21,6 +26,49 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent { HomeScreen(this) }
+    }
+
+    fun authenticationCallback(onSuccess: () -> Unit, onError: (() -> Unit)? = null): BiometricPrompt
+    .AuthenticationCallback =
+        @RequiresApi(Build.VERSION_CODES.P)
+        object : BiometricPrompt.AuthenticationCallback() {
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
+                super.onAuthenticationSucceeded(result)
+                onSuccess()
+            }
+
+            override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
+                super.onAuthenticationError(errorCode, errString)
+                onError?.invoke()
+            }
+
+            override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
+                super.onAuthenticationHelp(helpCode, helpString)
+            }
+        }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun launchBiometric(
+        context: Context,
+        description: String = "Authenticate with Biometrics",
+        authenticationCallback: BiometricPrompt.AuthenticationCallback,
+        onCancel: (() -> Unit)? = null
+    ) {
+        if (Biometrics.checkBiometricSupport(context)) {
+            val biometricPrompt = BiometricPrompt.Builder(this)
+                .apply {
+                    setTitle("Terra Planet")
+                    setDescription(description)
+                    setConfirmationRequired(false)
+                    setNegativeButton("Cancel", mainExecutor) { _, _ ->
+                        onCancel?.invoke()
+                    }
+                }.build()
+
+            biometricPrompt.authenticate(Biometrics.getCancellationSignal {
+                onCancel?.invoke()
+            }, mainExecutor, authenticationCallback)
+        }
     }
 }
 
@@ -38,6 +86,7 @@ private fun HomeScreen(context: ComponentActivity) {
             SetupNavGraph(context, navController = navController)
         }
     }
+
 }
 
 @Composable

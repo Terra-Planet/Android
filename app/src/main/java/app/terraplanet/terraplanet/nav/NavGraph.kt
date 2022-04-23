@@ -20,13 +20,13 @@ fun SetupNavGraph(context: ComponentActivity, navController: NavHostController) 
         navController = navController,
         startDestination = Screen.Wallet.route
     ) {
-        composable(route = Screen.Wallet.route) { WalletTab(walletViewModel, settingsViewModel) {
+        composable(route = Screen.Wallet.route) { WalletTab(context, walletViewModel, settingsViewModel) {
                 navController.navigate(route = Screen.Settings.route)
             }
         }
         composable(route = Screen.Transactions.route) { TransactionsTab() }
         composable(route = Screen.Settings.route) {
-            SettingsTab(settingsViewModel)
+            SettingsTab(context, settingsViewModel)
         }
     }
 }

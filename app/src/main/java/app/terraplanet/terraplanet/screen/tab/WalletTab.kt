@@ -2,6 +2,7 @@ package app.terraplanet.terraplanet.screen.tab
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,7 @@ import app.terraplanet.terraplanet.model.Swap
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.network.Denom
 import app.terraplanet.terraplanet.network.Net
+import app.terraplanet.terraplanet.screen.HomeActivity
 import app.terraplanet.terraplanet.screen.modal.EarnModal
 import app.terraplanet.terraplanet.screen.modal.ReceiveQrScreen
 import app.terraplanet.terraplanet.screen.modal.SendModal
@@ -38,11 +40,13 @@ import app.terraplanet.terraplanet.util.roundDecimal
 import app.terraplanet.terraplanet.viewmodel.SettingsViewModel
 import app.terraplanet.terraplanet.viewmodel.State
 import app.terraplanet.terraplanet.viewmodel.WalletViewModel
-import kotlinx.coroutines.*
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun WalletTab(model: WalletViewModel, settings: SettingsViewModel, navigateToSettings: () -> Unit) {
+fun WalletTab(activity: ComponentActivity,
+              model: WalletViewModel,
+              settings: SettingsViewModel, navigateToSettings: () -> Unit
+) {
 
     val wallet = model.walletState.collectAsState()
     val setting = settings.settingsState.collectAsState()
@@ -65,7 +69,7 @@ fun WalletTab(model: WalletViewModel, settings: SettingsViewModel, navigateToSet
     var swapData: Swap? by remember { mutableStateOf(null) }
     var sendData: Send? by remember { mutableStateOf(null) }
 
-    val context = LocalContext.current
+    val context = (activity as HomeActivity)
 
     model.updateNetwork(setting.value.network)
 
@@ -139,6 +143,7 @@ fun WalletTab(model: WalletViewModel, settings: SettingsViewModel, navigateToSet
                         fontStyle = FontStyle.Italic,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
                     )
+                    State.CANCELLED -> {}
                 }
             }
         }
@@ -191,6 +196,7 @@ fun WalletTab(model: WalletViewModel, settings: SettingsViewModel, navigateToSet
             ) { WalletAction(text = "Swap", icon = R.drawable.icon_swap, onClick = { showSwapModal = true }) }
             HSpacer(10)
             SendButtonSection(
+                context = context,
                 model = model,
                 onDismissRequest = { showSendModal = false },
                 showSendModal = showSendModal,
@@ -333,6 +339,7 @@ private fun SwapButtonSection(
 
 @Composable
 private fun SendButtonSection(
+    context: HomeActivity,
     model: WalletViewModel,
     onDismissRequest: () -> Unit,
     showSendModal: Boolean,
@@ -348,7 +355,7 @@ private fun SendButtonSection(
     content()
 
     if (showSendModal && enabled) {
-        ShowSendDialog(model, isLoading, showDialog, onSubmit, onConfirm, onDismiss, onDismissRequest)
+        ShowSendDialog(context, model, isLoading, showDialog, onSubmit, onConfirm, onDismiss, onDismissRequest)
     }
 }
 
@@ -534,6 +541,7 @@ private fun ShowReceiveDialog(
 
 @Composable
 private fun ShowSendDialog(
+    context: HomeActivity,
     model: WalletViewModel,
     isLoading: Boolean,
     showDialog: Boolean,
@@ -543,6 +551,6 @@ private fun ShowSendDialog(
     onDismissRequest: () -> Unit,
 ) {
     ModalTransitionDialog(onDismissRequest = onDismissRequest) {
-        SendModal(model, isLoading, showDialog, onSubmit, onConfirm, onDismiss, it)
+        SendModal(context, model, isLoading, showDialog, onSubmit, onConfirm, onDismiss, it)
     }
 }
