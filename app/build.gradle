@@ -17,7 +17,7 @@ android {
         applicationId "app.terraplanet.terraplanet"
         minSdk 23
         targetSdk 31
-        versionCode 10
+        versionCode 11
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

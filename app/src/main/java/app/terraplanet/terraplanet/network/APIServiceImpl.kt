@@ -63,7 +63,6 @@ class APIServiceImpl {
                 lunaPrice = it.amount.toDouble()
                 client.balance(wallet.address, network.id)
             }
-            .subscribeOn(Schedulers.io())
             .map { data ->
                 val coins = JSONArray(data.native[0] as String)
                 coins.toList().map {
@@ -77,7 +76,7 @@ class APIServiceImpl {
                         if (isLuna) quantity * lunaPrice else quantity
                     )
                 }.toList()
-            }
+            }.subscribeOn(Schedulers.io())
     }
 
     fun getEarnBalance(): Single<EarnBalance> {
@@ -229,6 +228,17 @@ class APIServiceImpl {
             .subscribeOn(Schedulers.io())
     }
 
+    fun validateAddress(address: String): Single<Boolean> {
+        return Network
+            .getClient(auth)
+            .validate(address)
+            .map {
+                val result = JSONObject(it)
+                result[VALID] as Boolean
+            }
+            .subscribeOn(Schedulers.io())
+    }
+
     fun getWallet(context: Context): Wallet? {
         val storage = Storage(context)
         val data = storage.getStringSecret(WALLET)
@@ -294,6 +304,7 @@ class APIServiceImpl {
         private const val DST_ADDR = "dst_addr"
         private const val ADDRESS = "address"
         private const val MEMO = "memo"
+        private const val VALID = "valid"
 
         // Keys
         private const val WALLET = "wallet"

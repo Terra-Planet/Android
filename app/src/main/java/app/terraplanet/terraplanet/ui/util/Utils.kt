@@ -3,7 +3,6 @@ package app.terraplanet.terraplanet.ui.util
 import android.content.Intent
 import android.view.KeyEvent
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,9 +30,7 @@ const val resetStack = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NE
 @Composable
 fun LoadingOverlay(color: Color = MainColor) {
     Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .clickable { },
+        modifier = Modifier.fillMaxSize(),
         color = Color(0xBB000000),
     ) {
         Center {
@@ -112,7 +109,7 @@ fun SimpleTextField(
                 .onKeyEvent {
                     if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                         onDone()
-                        true
+                        return@onKeyEvent true
                     }
                     false
                 },

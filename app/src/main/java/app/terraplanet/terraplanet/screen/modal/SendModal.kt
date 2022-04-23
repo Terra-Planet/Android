@@ -3,6 +3,7 @@ package app.terraplanet.terraplanet.screen.modal
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -90,7 +91,16 @@ fun SendModal(
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
                 intent?.let {
-                    address = it.getStringExtra(CameraActivity.RESULT) ?: ""
+                    val data = it.getStringExtra(CameraActivity.RESULT) ?: ""
+                    model.validate(data, onResult = { valid ->
+                        if (valid) {
+                            address = data
+                        } else {
+                            Toast.makeText(context, "Not a valid Terra address", Toast.LENGTH_SHORT).show()
+                        }
+                    }, {
+                        Toast.makeText(context, "Not a valid Terra address", Toast.LENGTH_SHORT).show()
+                    })
                 }
             }
         }
@@ -173,7 +183,20 @@ fun SendModal(
                         }
                         HSpacer(5)
                         Button(
-                            onClick = { context.pasteFromClipboard { address = it } },
+                            onClick = {
+                                context.pasteFromClipboard { data ->
+                                    model.validate(data, onResult = { valid ->
+                                        if (valid) {
+                                            address = data
+                                        } else {
+                                            Toast.makeText(context, "Not a valid Terra address", Toast.LENGTH_SHORT)
+                                                .show()
+                                        }
+                                    }, {
+                                        Toast.makeText(context, "Not a valid Terra address", Toast.LENGTH_SHORT).show()
+                                    })
+                                }
+                            },
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                             shape = RoundedCornerShape(10),
                             elevation = ButtonDefaults.elevation(defaultElevation = 0.dp, pressedElevation = 0.dp)

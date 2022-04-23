@@ -33,9 +33,7 @@ class Network {
             .hostnameVerifier { _, _ -> true }
             .addInterceptor(Interceptor { chain ->
                 val builder = chain.request().newBuilder()
-                builder.addHeader(
-                    AUTH_HEADER,
-                    "$BASIC_AUTH ${genAuthKey(auth)}")
+                builder.addHeader(AUTH_HEADER, "$BASIC_AUTH ${genAuthKey(auth)}")
                 return@Interceptor chain.proceed(builder.build())
             })
             .build()

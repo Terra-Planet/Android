@@ -28,7 +28,8 @@ import app.terraplanet.terraplanet.viewmodel.SettingsViewModel
 fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
     val api = APIServiceImpl()
     val scrollState = rememberScrollState()
-    val showDialog: Boolean by settings.showDialog.collectAsState()
+    val showSeedDialog: Boolean by settings.showSeedDialog.collectAsState()
+    val showLogoutDialog: Boolean by settings.showLogoutDialog.collectAsState()
     val context = (activity as HomeActivity)
 
     Column(
@@ -77,11 +78,11 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     context.launchBiometric(context, "Authenticate to show Seed Phrase",
                         context.authenticationCallback(onSuccess = {
-                            settings.openDialog()
+                            settings.openSeedDialog()
                         })
                     )
                 } else {
-                    settings.openDialog()
+                    settings.openSeedDialog()
                 }
             },
             colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
@@ -96,10 +97,7 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
         }
         VSpacer(10)
         Button(
-            onClick = {
-                api.nukeWallet(context)
-                settings.resetInitial(context)
-            },
+            onClick = { settings.openLogoutDialog() },
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(25),
@@ -118,9 +116,20 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
     }
 
     ShowSeedDialog(
-        showDialog,
+        showSeedDialog,
         api.getWallet(context)?.mnemonic ?: "",
-        settings::onDialogConfirm
+        settings::onSeedDialogConfirm
+    )
+
+    ShowLogoutDialog(
+        showLogoutDialog,
+        onConfirm = {
+            api.nukeWallet(context)
+            settings.dismissLogoutDialog()
+            settings.resetInitial(context)
+        }, onDismiss = {
+            settings.dismissLogoutDialog()
+        }
     )
 }
 
@@ -136,10 +145,35 @@ private fun ShowSeedDialog(
             properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
             confirmButton = {
                 TextButton(onClick = onConfirm)
-                { Text(text = "OK") }
+                { Text(text = "OK", fontWeight = FontWeight.Bold) }
             },
             title = { Text("Your seed phrase is:", fontSize = 18.sp, fontWeight = FontWeight.Bold) },
             text = { Text(seedPhrase, fontSize = 16.sp) }
+        )
+    }
+}
+
+@Composable
+private fun ShowLogoutDialog(
+    show: Boolean,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    if (show) {
+        AlertDialog(
+            onDismissRequest = onConfirm,
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
+            confirmButton = {
+                TextButton(onClick = onConfirm)
+                { Text(text = "Confirm", color = Color.Red) }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismiss)
+                { Text(text = "Cancel", fontWeight = FontWeight.Bold) }
+            },
+            title = { Text("ATTENTION", fontSize = 18.sp, fontWeight = FontWeight.Bold) },
+            text = { Text("Make sure your Seed Phrase is saved. If you don't have your Seed Phrase you will lose " +
+                    "access to your Wallet forever.", fontSize = 16.sp) }
         )
     }
 }

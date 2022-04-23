@@ -22,8 +22,11 @@ class SettingsViewModel(val app: Application): AndroidViewModel(app) {
 
     val settingsState: StateFlow<SettingsState> get() = _settingsState
 
-    private val _showDialog = MutableStateFlow(false)
-    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
+    private val _showSeedDialog = MutableStateFlow(false)
+    val showSeedDialog: StateFlow<Boolean> = _showSeedDialog.asStateFlow()
+
+    private val _showLogoutDialog = MutableStateFlow(false)
+    val showLogoutDialog: StateFlow<Boolean> = _showLogoutDialog.asStateFlow()
 
     init { fetchSettings() }
 
@@ -52,12 +55,20 @@ class SettingsViewModel(val app: Application): AndroidViewModel(app) {
         }
     }
 
-    fun openDialog() {
-        _showDialog.value = true
+    fun openSeedDialog() {
+        _showSeedDialog.value = true
     }
 
-    fun onDialogConfirm() {
-        _showDialog.value = false
+    fun onSeedDialogConfirm() {
+        _showSeedDialog.value = false
+    }
+
+    fun openLogoutDialog() {
+        _showLogoutDialog.value = true
+    }
+
+    fun dismissLogoutDialog() {
+        _showLogoutDialog.value = false
     }
 
     fun resetInitial(context: Context) {

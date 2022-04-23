@@ -96,10 +96,17 @@ class MainActivity : ComponentActivity() {
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
                 super.onAuthenticationError(errorCode, errString)
+                status.value = LoginState(State.CANCELLED, "Auth Canceled", false)
             }
 
             override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
                 super.onAuthenticationHelp(helpCode, helpString)
+                status.value = LoginState(State.CANCELLED, "Auth Canceled", false)
+            }
+
+            override fun onAuthenticationFailed() {
+                super.onAuthenticationFailed()
+                status.value = LoginState(State.CANCELLED, "Error. Try Again", false)
             }
         }
 

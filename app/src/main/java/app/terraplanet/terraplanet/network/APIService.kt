@@ -48,4 +48,7 @@ interface APIService {
 
     @POST("/wallet/send")
     fun send(@Body params: RequestBody): Single<String>
+
+    @GET("/wallet/validate_addr/{acc_address}")
+    fun validate(@Path("acc_address") address: String): Single<String>
 }

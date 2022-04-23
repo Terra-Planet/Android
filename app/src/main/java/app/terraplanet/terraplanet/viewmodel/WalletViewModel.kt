@@ -13,10 +13,7 @@ import app.terraplanet.terraplanet.network.Denom
 import app.terraplanet.terraplanet.network.Net
 import app.terraplanet.terraplanet.util.roundDecimal
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.flow.*
 
 class WalletViewModel(val app: Application): AndroidViewModel(app) {
@@ -24,7 +21,6 @@ class WalletViewModel(val app: Application): AndroidViewModel(app) {
     private val _walletState = MutableStateFlow(
         WalletState(State.LOADING, "0.00", 0.0, 0.0, Denom.UST, 0.0, listOf())
     )
-    private var disposable: Disposable? = null
     private var network = MutableStateFlow(api.getNetwork(app.applicationContext))
 
     val walletState: StateFlow<WalletState> get() = _walletState
@@ -55,30 +51,25 @@ class WalletViewModel(val app: Application): AndroidViewModel(app) {
             WalletState(State.LOADING, amount, earn, rate, gas, lunaPrice, coins).copy()
         }
 
-        disposable = Observable.fromSingle<Any> {
-            Single.zip(
-                api.getBalance(),
-                api.getEarnBalance(),
-                api.getRate()
-            ) { balance, earnBalance, market ->
-                lunaPrice = api.getLunaPrice()
-                coins.addAll(balance)
-                var total = 0.0
-                earn = earnBalance.amount.toDouble()
-                coins.forEach { coin -> total += coin.amount }
-                amount = (total + earnBalance.amount.toDouble()).roundDecimal(2)
-                rate = market.rate
-                gas = api.getPayGas(app.applicationContext)
-            }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    _walletState.update {WalletState(State.SUCCESS, amount, earn, rate, gas, lunaPrice, coins).copy() }
-                }, {
-                    _walletState.update {WalletState(State.FAILED, amount, earn, rate, gas, lunaPrice, coins).copy() }
-                })
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, {})
+        Single.zip(
+            api.getBalance(),
+            api.getEarnBalance(),
+            api.getRate()
+        ) { balance, earnBalance, market ->
+            lunaPrice = api.getLunaPrice()
+            coins.addAll(balance)
+            var total = 0.0
+            earn = earnBalance.amount.toDouble()
+            coins.forEach { coin -> total += coin.amount }
+            amount = (total + earnBalance.amount.toDouble()).roundDecimal(2)
+            rate = market.rate
+            gas = api.getPayGas(app.applicationContext)
+        }.observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _walletState.update { WalletState(State.SUCCESS, amount, earn, rate, gas, lunaPrice, coins).copy() }
+            }, {
+                _walletState.update { WalletState(State.FAILED, amount, earn, rate, gas, lunaPrice, coins).copy() }
+            })
     }
 
     fun userBalance() {
@@ -143,6 +134,16 @@ class WalletViewModel(val app: Application): AndroidViewModel(app) {
                 onDone(it)
             }, {
                 Log.e(LOG_E, "${it.message}")
+                onError()
+            })
+    }
+
+    fun validate(address: String, onResult: (Boolean) -> Unit, onError: () -> Unit) {
+        api.validateAddress(address)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                onResult(it)
+            }, {
                 onError()
             })
     }
