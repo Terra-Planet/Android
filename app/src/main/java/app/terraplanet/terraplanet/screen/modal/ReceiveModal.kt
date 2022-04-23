@@ -2,6 +2,7 @@ package app.terraplanet.terraplanet.screen.modal
 
 import android.graphics.Bitmap
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +35,8 @@ import com.google.zxing.qrcode.QRCodeWriter
 @Composable
 fun ReceiveQrScreen(modal: ModalTransitionDialogHelper, address: String) {
     val context = LocalContext.current
+
+    BackHandler { modal.triggerAnimatedClose() }
 
     Surface(
         color = bgColor(),

@@ -1,5 +1,6 @@
 package app.terraplanet.terraplanet.screen.modal
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -71,6 +72,8 @@ fun SwapModal(
     var uusd by remember { mutableStateOf(0.0) }
 
     val focusManager = LocalFocusManager.current
+
+    BackHandler { modal.triggerAnimatedClose() }
 
     Surface(
         color = bgColor(),

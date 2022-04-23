@@ -1,5 +1,6 @@
 package app.terraplanet.terraplanet.screen.modal
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,6 +55,8 @@ fun EarnModal(coin: Coin,
     var amount by remember { mutableStateOf(0.0) }
 
     val focusManager = LocalFocusManager.current
+
+    BackHandler { modal.triggerAnimatedClose() }
 
     Surface(
         color = bgColor(),

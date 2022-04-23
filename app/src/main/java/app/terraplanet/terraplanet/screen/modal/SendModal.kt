@@ -2,6 +2,7 @@ package app.terraplanet.terraplanet.screen.modal
 
 import android.app.Activity
 import android.content.Intent
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -56,7 +57,8 @@ fun SendModal(
     showDialog: Boolean,
     onSubmit: (Send) -> Unit,
     onConfirm: () -> Unit,
-    onDismiss: () -> Unit, modal: ModalTransitionDialogHelper
+    onDismiss: () -> Unit,
+    modal: ModalTransitionDialogHelper
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -77,6 +79,8 @@ fun SendModal(
     var amount by remember { mutableStateOf("") }
     var memo: String? by remember { mutableStateOf(null) }
     var send: Send? by remember { mutableStateOf(null) }
+
+    BackHandler { modal.triggerAnimatedClose() }
 
     val startForResult = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
