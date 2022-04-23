@@ -9,9 +9,8 @@ import java.lang.Exception
 import java.nio.ByteBuffer
 
 class QrCodeAnalyzer(
-    private val isDarkMode: Boolean,
     private val onCodeScanned: (String) -> Unit
-): ImageAnalysis.Analyzer {
+) : ImageAnalysis.Analyzer {
 
     private val imageFormat = listOf(
         ImageFormat.YUV_420_888,
@@ -33,9 +32,11 @@ class QrCodeAnalyzer(
                 false
             )
 
-            val binaryBitmap = BinaryBitmap(HybridBinarizer(if (isDarkMode) source.invert() else source))
+            val binaryBitmapLight = BinaryBitmap(HybridBinarizer(source))
+            val binaryBitmapDark = BinaryBitmap(HybridBinarizer(source.invert()))
+
             try {
-                val result = MultiFormatReader().apply {
+                val resultLight = MultiFormatReader().apply {
                     setHints(
                         mapOf(
                             DecodeHintType.POSSIBLE_FORMATS to arrayListOf(
@@ -43,10 +44,25 @@ class QrCodeAnalyzer(
                             )
                         )
                     )
-                }.decode(binaryBitmap)
-
-                onCodeScanned(result.text)
+                }.decode(binaryBitmapLight)
+                onCodeScanned(resultLight.text)
             } catch (e: Exception) {
+                try {
+                    val resultDark = MultiFormatReader().apply {
+                        setHints(
+                            mapOf(
+                                DecodeHintType.POSSIBLE_FORMATS to arrayListOf(
+                                    BarcodeFormat.QR_CODE
+                                )
+                            )
+                        )
+                    }.decode(binaryBitmapDark)
+                    onCodeScanned(resultDark.text)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    image.close()
+                }
                 e.printStackTrace()
             } finally {
                 image.close()

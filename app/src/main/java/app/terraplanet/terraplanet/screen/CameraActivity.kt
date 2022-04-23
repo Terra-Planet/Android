@@ -15,17 +15,36 @@ import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import app.terraplanet.terraplanet.ui.theme.TerraPlanetTheme
 import app.terraplanet.terraplanet.ui.theme.isDark
+import app.terraplanet.terraplanet.ui.util.Center
+import app.terraplanet.terraplanet.ui.util.Expandable
+import app.terraplanet.terraplanet.ui.util.VSpacer
 import app.terraplanet.terraplanet.util.QrCodeAnalyzer
 import java.lang.Exception
 
@@ -54,8 +73,6 @@ class CameraActivity : ComponentActivity() {
 fun CameraScreen(onResult: (String) -> Unit) {
     TerraPlanetTheme {
 
-        val isDarkMode = isDark()
-
         val context = LocalContext.current
         val lifeCycleOwner = LocalLifecycleOwner.current
 
@@ -75,6 +92,8 @@ fun CameraScreen(onResult: (String) -> Unit) {
             onResult = { granted -> hasCameraPermission = granted }
         )
 
+        var size by remember { mutableStateOf(IntSize.Zero) }
+
         LaunchedEffect(key1 = true) {
             launcher.launch(Manifest.permission.CAMERA)
         }
@@ -93,7 +112,7 @@ fun CameraScreen(onResult: (String) -> Unit) {
 
                     imageAnalysis.setAnalyzer(
                         ContextCompat.getMainExecutor(context),
-                        QrCodeAnalyzer(isDarkMode) { result -> onResult(result) }
+                        QrCodeAnalyzer{ result -> onResult(result) }
                     )
 
                     try {
@@ -103,6 +122,75 @@ fun CameraScreen(onResult: (String) -> Unit) {
                     }
                     previewView
                 }, modifier = Modifier.fillMaxSize())
+
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .onSizeChanged { size = it },
+                    color = Color.Black.copy(alpha = 0.25f)
+                ) {
+                    Surface(modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .drawWithCache {
+                            onDrawWithContent {
+                                drawRect(SolidColor(Color.Black), blendMode = BlendMode.SrcOut)
+                            }
+                        }
+                    ) {}
+                    Center {
+                        Column {
+                            VSpacer(20)
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = size.width.dp * 0.035f)
+                                    .aspectRatio(1f)
+                                    .drawWithCache {
+                                        onDrawWithContent {
+                                            drawRoundRect(
+                                                SolidColor(Color.White),
+                                                blendMode = BlendMode.DstOut,
+                                                cornerRadius = CornerRadius(30.dp.toPx(), 30.dp.toPx()),
+                                            )
+                                        }
+                                    },
+                            ) {}
+                            VSpacer(20)
+                            Text(
+                                text = "Scan a Terra Planet QR Code",
+                                textAlign = TextAlign.Center,
+                                color = Color.White,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    }
+                }
+            }
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Surface(modifier = Modifier
+                    .width(60.dp)
+                    .height(60.dp)
+                    .padding(top = 20.dp, start = 20.dp),
+                    color = Color.Black,
+                    shape = RoundedCornerShape(50),
+                ) {
+                    IconButton(onClick = { onResult("") }, modifier = Modifier.align(Alignment.Start)) {
+                        Icon(
+                            painter = rememberVectorPainter(image = Icons.Default.ArrowBack),
+                            tint = Color.White,
+                            contentDescription = null,
+                            modifier = Modifier.size(25.dp)
+                        )
+                    }
+                }
+                Expandable()
             }
         }
     }
