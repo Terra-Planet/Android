@@ -299,8 +299,9 @@ fun SendModal(
                                     context.launchBiometric(context, "Authenticate to send transaction",
                                         context.authenticationCallback(onSuccess = {
                                             onSubmit(send!!)
+                                        }), unsupportedCallback = {
+                                            onSubmit(send!!)
                                         })
-                                    )
                                 } else {
                                     onSubmit(send!!)
                                 }

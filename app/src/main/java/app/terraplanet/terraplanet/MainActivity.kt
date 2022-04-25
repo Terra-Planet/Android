@@ -123,6 +123,8 @@ class MainActivity : FragmentActivity() {
 
             val biometricPrompt = BiometricPrompt(this, mainExecutor, authenticationCallback)
             biometricPrompt.authenticate(biometricPromptInfo)
+        } else {
+            goToHomeScreen()
         }
     }
 }

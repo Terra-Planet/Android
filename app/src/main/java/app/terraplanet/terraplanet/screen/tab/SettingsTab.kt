@@ -79,8 +79,9 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
                     context.launchBiometric(context, "Authenticate to show Seed Phrase",
                         context.authenticationCallback(onSuccess = {
                             settings.openSeedDialog()
+                        }), unsupportedCallback = {
+                            settings.openSeedDialog()
                         })
-                    )
                 } else {
                     settings.openSeedDialog()
                 }

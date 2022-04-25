@@ -54,6 +54,7 @@ class HomeActivity : FragmentActivity() {
         context: Context,
         description: String = "Authenticate with Biometrics",
         authenticationCallback: BiometricPrompt.AuthenticationCallback,
+        unsupportedCallback: () -> Unit
     ) {
         if (Biometrics.checkBiometricSupport(context)) {
             val biometricPromptInfo = BiometricPrompt.PromptInfo.Builder()
@@ -65,6 +66,8 @@ class HomeActivity : FragmentActivity() {
 
             val biometricPrompt = BiometricPrompt(this, mainExecutor, authenticationCallback)
             biometricPrompt.authenticate(biometricPromptInfo)
+        } else {
+            unsupportedCallback()
         }
     }
 
