@@ -124,6 +124,7 @@ class MainActivity : FragmentActivity() {
             val biometricPrompt = BiometricPrompt(this, mainExecutor, authenticationCallback)
             biometricPrompt.authenticate(biometricPromptInfo)
         } else {
+            status.value = LoginState(State.SUCCESS, "Auth Successful", false)
             goToHomeScreen()
         }
     }

@@ -80,7 +80,6 @@ class WalletViewModel(val app: Application): AndroidViewModel(app) {
         api.anchorDeposit(amount)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ onDone() }, {
-                println("ERROR: ${it.message}")
                 onError()
             })
     }
