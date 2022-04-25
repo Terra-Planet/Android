@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class SettingsViewModel(val app: Application): AndroidViewModel(app) {
-    private val api = APIServiceImpl()
     private val _settingsState = MutableStateFlow(
         SettingsState(state = State.LOADING, Net.TEST, Denom.UST)
     )
@@ -74,6 +73,10 @@ class SettingsViewModel(val app: Application): AndroidViewModel(app) {
     fun resetInitial(context: Context) {
         val intent = Intent(context, InitActivity::class.java).apply { flags = resetStack }
         context.startActivity(intent)
+    }
+
+    companion object {
+        private val api = APIServiceImpl()
     }
 }
 

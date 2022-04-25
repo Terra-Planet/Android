@@ -4,7 +4,10 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.AssetManager
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONException
@@ -141,3 +144,18 @@ fun Context.pasteFromClipboard(done: (String) -> Unit) {
         }
     }
 }
+
+fun isNumeric(toCheck: String): Boolean {
+    val regex = """^[0-9]*((\.)[0-9]+)?$""".toRegex()
+    return if (toCheck.isEmpty()) false else regex.matches(toCheck)
+}
+
+fun String.parseToDouble(): Double {
+    return this.toDoubleOrNull() ?: this.toInt().toDouble()
+}
+
+fun Context.bitmapDrawable(drawable: Int): ImageBitmap? {
+    return ContextCompat.getDrawable(this, drawable)?.toBitmap()?.asImageBitmap()
+}
+
+data class ValidInput(val input: String, val valid: Boolean)

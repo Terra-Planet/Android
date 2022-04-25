@@ -47,8 +47,7 @@ import app.terraplanet.terraplanet.screen.CameraActivity
 import app.terraplanet.terraplanet.screen.HomeActivity
 import app.terraplanet.terraplanet.ui.theme.*
 import app.terraplanet.terraplanet.ui.util.*
-import app.terraplanet.terraplanet.util.pasteFromClipboard
-import app.terraplanet.terraplanet.util.roundDecimal
+import app.terraplanet.terraplanet.util.*
 import app.terraplanet.terraplanet.viewmodel.WalletViewModel
 import kotlinx.coroutines.launch
 
@@ -79,7 +78,7 @@ fun SendModal(
     val screenHeight = configuration.screenHeightDp.dp + 30.dp
 
     var address by remember { mutableStateOf("") }
-    var amount by remember { mutableStateOf("") }
+    var amount: ValidInput by remember { mutableStateOf(ValidInput("0", true)) }
     var memo: String? by remember { mutableStateOf(null) }
     var send: Send? by remember { mutableStateOf(null) }
 
@@ -126,9 +125,9 @@ fun SendModal(
                                     modifier = Modifier.clickable {
                                         coin = wallet.value.coins[it]
                                         totalBalance = if (coin.denom == Denom.LUNA) coin.quantity else coin.amount
-                                        amount.toDoubleOrNull()?.let { parse ->
-                                            if (parse > totalBalance) {
-                                                amount = "$totalBalance"
+                                        if (amount.valid) {
+                                            if (amount.input.toDouble() > totalBalance) {
+                                                amount = ValidInput("$totalBalance", true)
                                             }
                                         }
                                         hide()
@@ -245,7 +244,7 @@ fun SendModal(
                         Text(totalBalance.roundDecimal(if (coin.denom == Denom.UST) 2 else 4))
                         HSpacer(15)
                         Text("Max", fontSize = 18.sp, color = MainBlue, modifier = Modifier.clickable {
-                            amount = "$totalBalance"
+                            amount = ValidInput("$totalBalance", true)
                         })
                     }
                     VSpacer(10)
@@ -259,19 +258,24 @@ fun SendModal(
                             Column {
                                 Container(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                                     BasicInput(
-                                        value = amount.ifEmpty { "0" },
-                                        onValueChange = {
-                                            val input = it.replace(",", "")
-                                            val value = input.toDoubleOrNull()
-                                            value?.let { parse ->
+                                        value = amount.input,
+                                        onValueChange = { value ->
+                                            val parsed = value.take(15)
+                                                .trimStart('0')
+                                                .replace(",", "")
+                                                .replace("-", "")
+                                                .replace(" ", "")
+                                            val fix = if (parsed.startsWith(".")) "0$parsed" else parsed
+                                            val isNumber = isNumeric(parsed)
+                                            amount = if (isNumber) {
                                                 val maxValue = if (coin.denom == Denom.LUNA) coin.quantity else coin.amount
-                                                amount = if (parse > maxValue) {
-                                                    "$maxValue"
-                                                } else {
-                                                    "$parse"
-                                                }
+                                                val number = fix.parseToDouble()
+                                                ValidInput(fix, number <= maxValue)
+                                            } else {
+                                                ValidInput(fix, false)
                                             }
                                         },
+                                        color = if (amount.valid) colorAware() else Color.Red,
                                         keyboardType = KeyboardType.Decimal,
                                         textAlign = TextAlign.Center
                                     )
@@ -285,7 +289,8 @@ fun SendModal(
                                 send = Send(
                                     model.getGas(),
                                     wallet.value.coins.find { it.denom == model.getGas() },
-                                    coin, amount.toDouble(),
+                                    coin,
+                                    amount.input.toDoubleOrNull() ?: amount.input.toInt().toDouble(),
                                     0.0,
                                     address,
                                     memo
@@ -302,7 +307,9 @@ fun SendModal(
                             },
                             colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
                             shape = RoundedCornerShape(20),
-                            enabled = amount.isNotEmpty() && address.isNotEmpty()
+                            enabled = amount.valid &&
+                                    (amount.input.parseToDouble()) > 0.0 &&
+                                    address.isNotEmpty()
                         ) {
                             Text(
                                 text = "SEND",
@@ -346,7 +353,8 @@ private fun BasicInput(
     value: String,
     onValueChange: (String) -> Unit,
     keyboardType: KeyboardType = KeyboardType.Text,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color = colorAware()
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -363,7 +371,7 @@ private fun BasicInput(
             textStyle = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = colorAware(),
+                color = color,
                 textAlign = textAlign
             ),
             cursorBrush = SolidColor(colorAware()),
@@ -376,6 +384,8 @@ private fun BasicInput(
 
 @Composable
 private fun CoinSelector(coin: Coin) {
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -383,7 +393,7 @@ private fun CoinSelector(coin: Coin) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = coin.icon),
+            bitmap = context.bitmapDrawable(coin.icon)!!,
             contentDescription = null,
             modifier = Modifier
                 .width(35.dp)

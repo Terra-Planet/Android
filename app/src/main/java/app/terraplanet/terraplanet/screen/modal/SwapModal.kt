@@ -42,6 +42,10 @@ import app.terraplanet.terraplanet.ui.theme.MainColor
 import app.terraplanet.terraplanet.ui.theme.bgColor
 import app.terraplanet.terraplanet.ui.theme.colorAware
 import app.terraplanet.terraplanet.ui.util.*
+import app.terraplanet.terraplanet.util.ValidInput
+import app.terraplanet.terraplanet.util.bitmapDrawable
+import app.terraplanet.terraplanet.util.isNumeric
+import app.terraplanet.terraplanet.util.parseToDouble
 
 @Composable
 fun SwapModal(
@@ -68,12 +72,16 @@ fun SwapModal(
     val lunaQuantity = coins.find { it.denom == Denom.LUNA }?.quantity ?: 0.0
     val uusdQuantity = coins.find { it.denom == Denom.UST }?.quantity ?: 0.0
 
-    var luna by remember { mutableStateOf(0.0) }
-    var uusd by remember { mutableStateOf(0.0) }
+    var luna by remember { mutableStateOf(ValidInput("0", true)) }
+    var uusd by remember { mutableStateOf(ValidInput("0", true)) }
+
+    var lunaRate by remember { mutableStateOf(lunaPrice) }
 
     val focusManager = LocalFocusManager.current
 
     BackHandler { modal.triggerAnimatedClose() }
+
+    api.getLunaRate(rate = { lunaRate = it })
 
     Surface(
         color = bgColor(),
@@ -109,19 +117,30 @@ fun SwapModal(
                 SimpleCoinItem(
                     coin = swapCoins.first(),
                     amount = if (swapCoins.first().denom == Denom.UST) uusd else luna,
-                    onValueChange = {
-                        val input = it.replace(",", "")
+                    onValueChange = { value ->
+                        val parsed = value.take(15)
+                            .trimStart('0')
+                            .replace(",", "")
+                            .replace("-", "")
+                            .replace(" ", "")
+                        val isNumber = isNumeric(parsed)
                         if (swapCoins.first().denom == Denom.UST) {
-                            val value = input.toDoubleOrNull()
-                            value?.let {
-                                uusd = if (value > uusdQuantity) uusdQuantity else value
-                                luna = uusd / lunaPrice
+                            val fix = if (parsed.startsWith(".")) "0$parsed" else parsed
+                            if (isNumber) {
+                                val number = parsed.parseToDouble()
+                                uusd = ValidInput(fix, number <= uusdQuantity)
+                                luna = ValidInput("${number / lunaRate}", true)
+                            } else {
+                                uusd = ValidInput(fix, false)
                             }
                         } else {
-                            val value = input.toDoubleOrNull()
-                            value?.let {
-                                luna = if (value > lunaQuantity) lunaQuantity else value
-                                uusd = luna * lunaPrice
+                            val fix = if (parsed.startsWith(".")) "0$parsed" else parsed
+                            if (isNumber) {
+                                val number = parsed.parseToDouble()
+                                luna = ValidInput(fix, number <= lunaQuantity)
+                                uusd = ValidInput("${number * lunaRate}", true)
+                            } else {
+                                luna = ValidInput(fix, false)
                             }
                         }
                     }
@@ -129,8 +148,8 @@ fun SwapModal(
             }
             VSpacer(20)
             IconButton(onClick = {
-                luna = 0.0
-                uusd = 0.0
+                luna = ValidInput("0", true)
+                uusd = ValidInput("0", true)
                 focusManager.clearFocus()
                 swapCoins = if (swapCoins.first().denom == denoms.first().denom) {
                     listOf(denoms.last(), denoms.first())
@@ -157,19 +176,30 @@ fun SwapModal(
                 SimpleCoinItem(
                     coin = swapCoins.last(),
                     amount = if (swapCoins.last().denom == Denom.UST) uusd else luna,
-                    onValueChange = {
-                        val input = it.replace(",", "")
+                    onValueChange = { value ->
+                        val parsed = value.take(15)
+                            .trimStart('0')
+                            .replace(",", "")
+                            .replace("-", "")
+                            .replace(" ", "")
+                        val isNumber = isNumeric(parsed)
                         if (swapCoins.last().denom == Denom.UST) {
-                            val value = input.toDoubleOrNull()
-                            value?.let {
-                                uusd = if (value > uusdQuantity) uusdQuantity else value
-                                luna = uusd / lunaPrice
+                            val fix = if (parsed.startsWith(".")) "0$parsed" else parsed
+                            if (isNumber) {
+                                val number = fix.parseToDouble()
+                                uusd = ValidInput(fix, number <= uusdQuantity)
+                                luna = ValidInput("${number / lunaRate}", true)
+                            } else {
+                                uusd = ValidInput(fix, false)
                             }
                         } else {
-                            val value = input.toDoubleOrNull()
-                            value?.let {
-                                luna = if (value > lunaQuantity) lunaQuantity else value
-                                uusd = luna * lunaPrice
+                            val fix = if (parsed.startsWith(".")) "0$parsed" else parsed
+                            if (isNumber) {
+                                val number = parsed.parseToDouble()
+                                luna = ValidInput(fix, number <= lunaQuantity)
+                                uusd = ValidInput("${number * lunaRate}", true)
+                            } else {
+                                luna = ValidInput(fix, false)
                             }
                         }
                     }
@@ -183,7 +213,7 @@ fun SwapModal(
                         Swap(
                             swapCoins.first(),
                             swapCoins.last(),
-                            if (swapCoins.first().denom == Denom.UST) uusd else luna,
+                            if (swapCoins.first().denom == Denom.UST) uusd.input.parseToDouble() else luna.input.parseToDouble(),
                             0.0,
                             api.getPayGas(context)
                         )
@@ -192,7 +222,7 @@ fun SwapModal(
                 colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(25),
-                enabled = uusd > 0.0 && luna > 0.0
+                enabled = (uusd.valid && uusd.input.parseToDouble() > 0.0) && (luna.valid && luna.input.parseToDouble() > 0.0)
             ) {
                 Text(
                     text = "SWAP",
@@ -207,16 +237,18 @@ fun SwapModal(
             LoadingOverlay(Color.White)
         }
 
-        ShowSwapDialog(swap, showDialog, lunaPrice, onConfirm, onDismiss)
+        ShowSwapDialog(swap, showDialog, lunaRate, onConfirm, onDismiss)
     }
 }
 
 @Composable
 private fun SimpleCoinItem(
     coin: Coin,
-    amount: Double,
+    amount: ValidInput,
     onValueChange: (String) -> Unit,
 ) {
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -224,7 +256,7 @@ private fun SimpleCoinItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = coin.icon),
+            bitmap = context.bitmapDrawable(coin.icon)!!,
             contentDescription = null,
             modifier = Modifier
                 .width(35.dp)
@@ -239,10 +271,10 @@ private fun SimpleCoinItem(
         Box(modifier = Modifier.weight(1f))
         HSpacer(10)
         BasicInput(
-            value = if(amount == 0.0) "0" else "$amount",
+            value = amount.input,
             onValueChange = onValueChange,
             keyboardType = KeyboardType.Decimal,
-            color = colorAware()
+            color = if (amount.valid) colorAware() else Color.Red
         )
     }
 }
@@ -252,7 +284,8 @@ private fun BasicInput(
     value: String,
     onValueChange: (String) -> Unit,
     keyboardType: KeyboardType = KeyboardType.Text,
-    color: Color = Color.White
+    textAlign: TextAlign = TextAlign.End,
+    color: Color = colorAware()
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -265,16 +298,17 @@ private fun BasicInput(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.width(IntrinsicSize.Min),
+            modifier = Modifier.fillMaxWidth(),
             textStyle = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = color,
+                textAlign = textAlign
             ),
             cursorBrush = SolidColor(colorAware()),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-            maxLines = 1
+            maxLines = 1,
         )
     }
 }

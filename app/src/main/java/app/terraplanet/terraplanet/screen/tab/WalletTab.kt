@@ -36,6 +36,7 @@ import app.terraplanet.terraplanet.screen.modal.SwapModal
 import app.terraplanet.terraplanet.ui.theme.MainColor
 import app.terraplanet.terraplanet.ui.theme.Orange
 import app.terraplanet.terraplanet.ui.util.*
+import app.terraplanet.terraplanet.util.bitmapDrawable
 import app.terraplanet.terraplanet.util.roundDecimal
 import app.terraplanet.terraplanet.viewmodel.SettingsViewModel
 import app.terraplanet.terraplanet.viewmodel.State
@@ -387,12 +388,14 @@ private fun EarnButtonSection(
 
 @Composable
 fun CoinItem(coin: Coin) {
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = coin.icon),
+            bitmap = context.bitmapDrawable(coin.icon)!!,
             contentDescription = null,
             modifier = Modifier
                 .width(35.dp)

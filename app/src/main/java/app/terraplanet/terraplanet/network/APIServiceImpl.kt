@@ -5,7 +5,9 @@ import app.terraplanet.terraplanet.R
 import app.terraplanet.terraplanet.model.*
 import app.terraplanet.terraplanet.secure.Storage
 import app.terraplanet.terraplanet.util.AppUtil.Companion.toList
+import app.terraplanet.terraplanet.util.parseToDouble
 import com.google.gson.Gson
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.MediaType
@@ -14,6 +16,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class APIServiceImpl {
+
     fun getStatus(): Single<ServerStatus> {
         return Network.getClient(auth).status().subscribeOn(Schedulers.io())
     }
@@ -27,7 +30,7 @@ class APIServiceImpl {
             .map {
                 wallet = it
                 storage.saveSecret(WALLET, it.toJSON())
-                wallet
+                wallet!!
             }
     }
 
@@ -49,8 +52,8 @@ class APIServiceImpl {
                 .subscribeOn(Schedulers.io())
                 .map { data ->
                     wallet = Wallet(data.address, mnemonic)
-                    storage.saveSecret(WALLET, wallet.toJSON())
-                    wallet
+                    storage.saveSecret(WALLET, wallet!!.toJSON())
+                    wallet!!
                 }
         }
     }
@@ -60,15 +63,15 @@ class APIServiceImpl {
         return client
             .lunaRate()
             .flatMap {
-                lunaPrice = it.amount.toDouble()
-                client.balance(wallet.address, network.id)
+                lunaPrice = it.amount.parseToDouble()
+                client.balance(wallet!!.address, network.id)
             }
             .map { data ->
                 val coins = JSONArray(data.native[0] as String)
                 coins.toList().map {
                     val coin = JSONObject("$it")
                     val isLuna = coin[DENOM] == Denom.LUNA.id
-                    val quantity = ("${coin[AMOUNT]}".toInt().toDouble() / 1000000)
+                    val quantity = ("${coin[AMOUNT]}".parseToDouble() / 1000000)
                     Coin(
                         if (isLuna) Denom.LUNA else Denom.UST,
                         if (isLuna) R.drawable.coin_luna else  R.drawable.coin_ust,
@@ -81,7 +84,7 @@ class APIServiceImpl {
 
     fun getEarnBalance(): Single<EarnBalance> {
         val map = mutableMapOf<String, String>()
-        map[MNEMONIC] = wallet.mnemonic
+        map[MNEMONIC] = wallet!!.mnemonic
         map[NETWORK] = network.id
         val params = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), gson.toJson(map))
         return Network.getClient(auth)
@@ -91,7 +94,7 @@ class APIServiceImpl {
 
     fun getRate(): Single<Market> {
         val map = mutableMapOf<String, String>()
-        map[MNEMONIC] = wallet.mnemonic
+        map[MNEMONIC] = wallet!!.mnemonic
         map[NETWORK] = network.id
         val params = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), gson.toJson(map))
         return Network.getClient(auth)
@@ -103,7 +106,7 @@ class APIServiceImpl {
         val map = mutableMapOf<String, String>()
         map[TOKEN] = Denom.UST.id
         map[AMOUNT] = "$amount"
-        map[MNEMONIC] = wallet.mnemonic
+        map[MNEMONIC] = wallet!!.mnemonic
         map[NETWORK] = network.id
         val params = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), gson.toJson(map))
         return Network.getClient(auth)
@@ -115,7 +118,7 @@ class APIServiceImpl {
         val map = mutableMapOf<String, String>()
         map[TOKEN] = Denom.UST.id
         map[AMOUNT] = "$amount"
-        map[MNEMONIC] = wallet.mnemonic
+        map[MNEMONIC] = wallet!!.mnemonic
         map[NETWORK] = network.id
         val params = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), gson.toJson(map))
         return Network.getClient(auth)
@@ -129,8 +132,8 @@ class APIServiceImpl {
         map[SRC] = swap.from.denom.id
         map[DST] = swap.to.denom.id
         map[AMOUNT] = "${swap.amount}"
-        map[ADDRESS] = wallet.address
-        map[MNEMONIC] = wallet.mnemonic
+        map[ADDRESS] = wallet!!.address
+        map[MNEMONIC] = wallet!!.mnemonic
         map[NETWORK] = network.id
 
         val params = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), gson.toJson(map))
@@ -138,7 +141,7 @@ class APIServiceImpl {
         return client
             .lunaRate()
             .flatMap {
-                lunaPrice = it.amount.toDouble()
+                lunaPrice = it.amount.parseToDouble()
                 client.swapPreview(params)
             }
             .map {
@@ -147,7 +150,7 @@ class APIServiceImpl {
                 val feeInfo = JSONObject(authInfo[FEE] as String)
                 val fee = (feeInfo[AMOUNT] as JSONArray)[0] as JSONObject
                 val amount = fee[AMOUNT] as String
-                swap.fee = (amount.toDouble()) / 1000000
+                swap.fee = (amount.parseToDouble()) / 1000000
                 swap
             }
             .subscribeOn(Schedulers.io())
@@ -159,15 +162,15 @@ class APIServiceImpl {
         map[SRC] = swap.from.denom.id
         map[DST] = swap.to.denom.id
         map[AMOUNT] = "${swap.amount}"
+        map[MNEMONIC] = wallet!!.mnemonic
         map[NETWORK] = network.id
-        map[MNEMONIC] = wallet.mnemonic
 
         val params = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), gson.toJson(map))
         val client = Network.getClient(auth)
         return client
             .lunaRate()
             .flatMap {
-                lunaPrice = it.amount.toDouble()
+                lunaPrice = it.amount.parseToDouble()
                 client.swap(params)
             }
             .map { swap }
@@ -180,7 +183,7 @@ class APIServiceImpl {
         map[TOKEN] = send.coin.denom.id
         map[AMOUNT] = "${send.amount}"
         map[DST_ADDR] = send.address
-        map[MNEMONIC] = wallet.mnemonic
+        map[MNEMONIC] = wallet!!.mnemonic
         map[NETWORK] = network.id
 
         val params = RequestBody.create(MediaType.parse(CONTENT_TYPE_JSON), gson.toJson(map))
@@ -188,7 +191,7 @@ class APIServiceImpl {
         return client
             .lunaRate()
             .flatMap {
-                lunaPrice = it.amount.toDouble()
+                lunaPrice = it.amount.parseToDouble()
                 client.sendPreview(params)
             }
             .map {
@@ -197,7 +200,7 @@ class APIServiceImpl {
                 val feeInfo = JSONObject(authInfo[FEE] as String)
                 val fee = (feeInfo[AMOUNT] as JSONArray)[0] as JSONObject
                 val amount = fee[AMOUNT] as String
-                send.fee = (amount.toDouble()) / 1000000
+                send.fee = (amount.parseToDouble()) / 1000000
                 send
             }
             .subscribeOn(Schedulers.io())
@@ -209,7 +212,7 @@ class APIServiceImpl {
         map[TOKEN] = send.coin.denom.id
         map[AMOUNT] = "${send.amount}"
         map[DST_ADDR] = send.address
-        map[MNEMONIC] = wallet.mnemonic
+        map[MNEMONIC] = wallet!!.mnemonic
         map[NETWORK] = network.id
 
         send.memo?.let { memo ->
@@ -221,7 +224,7 @@ class APIServiceImpl {
         return client
             .lunaRate()
             .flatMap {
-                lunaPrice = it.amount.toDouble()
+                lunaPrice = it.amount.parseToDouble()
                 client.send(params)
             }
             .map { send }
@@ -285,6 +288,19 @@ class APIServiceImpl {
 
     fun getLunaPrice(): Double = lunaPrice
 
+    fun getLunaRate(rate: (Double) -> Unit) {
+        Network.getClient(auth)
+            .lunaRate()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                lunaPrice = it.amount.parseToDouble()
+                rate(lunaPrice)
+            }, {
+                rate(lunaPrice)
+            })
+    }
+
     fun initSettings(context: Context) {
         val storage = Storage(context)
         storage.save(CURRENT_NETWORK, network.id)
@@ -320,7 +336,7 @@ class APIServiceImpl {
         private val gson = Gson()
 
         // Wallet
-        private lateinit var wallet: Wallet
+        private var wallet: Wallet? = null
         private var lunaPrice: Double = 1.0
         private var network = Net.TEST
         private var gas = Denom.UST

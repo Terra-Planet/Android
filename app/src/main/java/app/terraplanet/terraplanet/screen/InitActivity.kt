@@ -12,7 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -24,7 +24,7 @@ import app.terraplanet.terraplanet.ui.theme.TerraPlanetTheme
 import app.terraplanet.terraplanet.ui.theme.Title
 import app.terraplanet.terraplanet.ui.util.Expandable
 import app.terraplanet.terraplanet.ui.util.VSpacer
-import app.terraplanet.terraplanet.ui.util.clearStack
+import app.terraplanet.terraplanet.util.bitmapDrawable
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class InitActivity : ComponentActivity() {
@@ -38,17 +38,6 @@ class InitActivity : ComponentActivity() {
                 onWallet = { initYourWalletScreen() }
             )
         }
-
-        getWallet()
-    }
-
-    private fun getWallet() {
-        api.getWallet(applicationContext)?.let { initHomeScreen() }
-    }
-
-    private fun initHomeScreen() {
-        val intent = Intent(this, HomeActivity::class.java).apply { flags = clearStack }
-        startActivity(intent)
     }
 
     private fun initYourWalletScreen() {
@@ -67,6 +56,8 @@ private fun InitScreen(onWallet: () -> Unit, onImport: () -> Unit) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(color = MainColor)
 
+    val context = LocalContext.current
+
     TerraPlanetTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -82,7 +73,7 @@ private fun InitScreen(onWallet: () -> Unit, onImport: () -> Unit) {
                 Title()
                 VSpacer(30)
                 Image(
-                    painter = painterResource(id = R.drawable.app_logo),
+                    bitmap = context.bitmapDrawable(R.drawable.app_logo)!!,
                     modifier = Modifier.size(width = 150.dp, height = 150.dp),
                     contentDescription = null,
                 )

@@ -17,7 +17,6 @@ import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.flow.*
 
 class WalletViewModel(val app: Application): AndroidViewModel(app) {
-    private val api = APIServiceImpl()
     private val _walletState = MutableStateFlow(
         WalletState(State.LOADING, "0.00", 0.0, 0.0, Denom.UST, 0.0, listOf())
     )
@@ -26,6 +25,7 @@ class WalletViewModel(val app: Application): AndroidViewModel(app) {
     val walletState: StateFlow<WalletState> get() = _walletState
 
     init {
+        api.getWallet(app.applicationContext)
         network.onEach {
                 fetchWallet()
             }.launchIn(viewModelScope)
@@ -146,6 +146,10 @@ class WalletViewModel(val app: Application): AndroidViewModel(app) {
             }, {
                 onError()
             })
+    }
+
+    companion object {
+        private val api = APIServiceImpl()
     }
 }
 

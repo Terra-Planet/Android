@@ -17,8 +17,8 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -31,6 +31,7 @@ import app.terraplanet.terraplanet.ui.theme.MainColor
 import app.terraplanet.terraplanet.ui.theme.bgColor
 import app.terraplanet.terraplanet.ui.theme.colorAware
 import app.terraplanet.terraplanet.ui.util.*
+import app.terraplanet.terraplanet.util.bitmapDrawable
 import app.terraplanet.terraplanet.util.roundDecimal
 
 enum class EarnTab {
@@ -190,6 +191,8 @@ fun EarnModal(coin: Coin,
 
 @Composable
 private fun SimpleCoinItem(amount: Double, coin: Coin, onChangeValue: (String) -> Unit) {
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -197,7 +200,7 @@ private fun SimpleCoinItem(amount: Double, coin: Coin, onChangeValue: (String) -
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = coin.icon),
+            bitmap = context.bitmapDrawable(coin.icon)!!,
             contentDescription = null,
             modifier = Modifier
                 .width(35.dp)
