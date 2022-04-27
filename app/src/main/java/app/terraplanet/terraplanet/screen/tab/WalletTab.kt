@@ -166,6 +166,7 @@ fun WalletTab(activity: ComponentActivity,
             ) }
             HSpacer(10)
             SwapButtonSection(
+                context,
                 swapData,
                 wallet.value.coins,
                 wallet.value.lunaPrice,
@@ -282,6 +283,7 @@ fun WalletTab(activity: ComponentActivity,
                 }
 
                 EarnModalSection(
+                    context,
                     coin = wallet.value.coins.find { it.denom == Denom.UST },
                     earn = wallet.value.earn,
                     isLoading = isEarnLoading,
@@ -347,6 +349,7 @@ private fun ReceiveButtonSection(
 
 @Composable
 private fun SwapButtonSection(
+    context: HomeActivity,
     swap: Swap?,
     coins: List<Coin>,
     lunaPrice: Double,
@@ -363,7 +366,7 @@ private fun SwapButtonSection(
     content()
 
     if (showSwapModal) {
-        ShowSwapDialog(swap, coins, lunaPrice, isLoading, showDialog, onSubmit, onConfirm, onDismiss, onDismissRequest)
+        ShowSwapDialog(context, swap, coins, lunaPrice, isLoading, showDialog, onSubmit, onConfirm, onDismiss, onDismissRequest)
     }
 }
 
@@ -391,6 +394,7 @@ private fun SendButtonSection(
 
 @Composable
 private fun EarnModalSection(
+    context: HomeActivity,
     coin: Coin?,
     earn: Double,
     isLoading: Boolean,
@@ -402,7 +406,7 @@ private fun EarnModalSection(
 
     if (showEarnModal) {
         coin?.let {
-            ShowEarnDialog(it, earn, isDeposit, isLoading, onSubmit, onDismissRequest)
+            ShowEarnDialog(context, it, earn, isDeposit, isLoading, onSubmit, onDismissRequest)
         }
     }
 }
@@ -533,6 +537,7 @@ fun WithdrawEarn(
 
 @Composable
 private fun ShowEarnDialog(
+    context: HomeActivity,
     coin: Coin,
     earn: Double,
     isDeposit: Boolean,
@@ -542,12 +547,13 @@ private fun ShowEarnDialog(
 ) {
 
     ModalTransitionDialog(onDismissRequest = onDismissRequest) {
-        EarnModal(coin, earn, isDeposit, isLoading, onSubmit, it)
+        EarnModal(context, coin, earn, isDeposit, isLoading, onSubmit, it)
     }
 }
 
 @Composable
 private fun ShowSwapDialog(
+    context: HomeActivity,
     swap: Swap?,
     coins: List<Coin>,
     lunaPrice: Double,
@@ -559,7 +565,7 @@ private fun ShowSwapDialog(
     onDismissRequest: () -> Unit
 ) {
     ModalTransitionDialog(onDismissRequest = onDismissRequest) {
-        SwapModal(swap, coins, lunaPrice, isLoading, showDialog, onSubmit, onConfirm, onDismiss, it)
+        SwapModal(context, swap, coins, lunaPrice, isLoading, showDialog, onSubmit, onConfirm, onDismiss, it)
     }
 }
 

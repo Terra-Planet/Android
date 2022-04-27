@@ -1,5 +1,6 @@
 package app.terraplanet.terraplanet.screen.modal
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.terraplanet.terraplanet.model.Coin
+import app.terraplanet.terraplanet.screen.HomeActivity
 import app.terraplanet.terraplanet.ui.theme.MainBlue
 import app.terraplanet.terraplanet.ui.theme.MainColor
 import app.terraplanet.terraplanet.ui.theme.bgColor
@@ -40,12 +42,14 @@ enum class EarnTab {
 }
 
 @Composable
-fun EarnModal(coin: Coin,
-              earn: Double,
-              isDeposit: Boolean,
-              isLoading: Boolean,
-              onSubmit: (Double, Boolean) -> Unit,
-              modal: ModalTransitionDialogHelper
+fun EarnModal(
+    context: HomeActivity,
+    coin: Coin,
+    earn: Double,
+    isDeposit: Boolean,
+    isLoading: Boolean,
+    onSubmit: (Double, Boolean) -> Unit,
+    modal: ModalTransitionDialogHelper
 ) {
     val scrollState = rememberScrollState()
     val earnSegment = remember { listOf(EarnTab.Deposit.name, EarnTab.Withdraw.name) }
@@ -111,7 +115,8 @@ fun EarnModal(coin: Coin,
                     modifier = Modifier.clickable {
                         amount = if (deposit)
                             if (coin.amount > 1.0) coin.amount - 1.0 else coin.amount
-                            else earn })
+                        else earn
+                    })
             }
             VSpacer(4)
             Surface(
@@ -150,7 +155,18 @@ fun EarnModal(coin: Coin,
             Button(
                 onClick = {
                     focusManager.clearFocus()
-                    onSubmit(amount, deposit)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        context.launchBiometric(
+                            context,
+                            "Authenticate to ${if (deposit) "deposit" else "withdraw"}",
+                            context.authenticationCallback(onSuccess = {
+                                onSubmit(amount, deposit)
+                            }), unsupportedCallback = {
+                                onSubmit(amount, deposit)
+                            })
+                    } else {
+                        onSubmit(amount, deposit)
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
                 modifier = Modifier.fillMaxWidth(),
@@ -177,6 +193,15 @@ fun EarnModal(coin: Coin,
                 Text(
                     "You don't have enough UST to pay fees and Withdraw your earnings. Please, deposit more funds or" +
                             " select a lower amount.",
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+            }
+
+            if (!deposit) {
+                VSpacer(10)
+                Text(
+                    "When you withdraw your funds, it will take up to a minute to be reflected in your balance",
                     color = Color.Gray,
                     fontSize = 14.sp
                 )
@@ -214,7 +239,7 @@ private fun SimpleCoinItem(amount: Double, coin: Coin, onChangeValue: (String) -
         }
         Expandable()
         BasicInput(
-            value = if(amount == 0.0) "0" else "$amount",
+            value = if (amount == 0.0) "0" else "$amount",
             onValueChange = onChangeValue,
             keyboardType = KeyboardType.Decimal,
             color = colorAware()

@@ -1,5 +1,6 @@
 package app.terraplanet.terraplanet.screen.modal
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -37,6 +38,7 @@ import app.terraplanet.terraplanet.model.Coin
 import app.terraplanet.terraplanet.model.Swap
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.network.Denom
+import app.terraplanet.terraplanet.screen.HomeActivity
 import app.terraplanet.terraplanet.ui.theme.MainBlue
 import app.terraplanet.terraplanet.ui.theme.MainColor
 import app.terraplanet.terraplanet.ui.theme.bgColor
@@ -49,6 +51,7 @@ import app.terraplanet.terraplanet.util.parseToDouble
 
 @Composable
 fun SwapModal(
+    context: HomeActivity,
     swap: Swap?,
     coins: List<Coin>,
     lunaPrice: Double,
@@ -60,7 +63,6 @@ fun SwapModal(
     modal: ModalTransitionDialogHelper
 ) {
     val api = APIServiceImpl()
-    val context = LocalContext.current
 
     val scrollState = rememberScrollState()
     val denoms = listOf(
@@ -209,15 +211,27 @@ fun SwapModal(
             Button(
                 onClick = {
                     focusManager.clearFocus()
-                    onSubmit(
-                        Swap(
-                            swapCoins.first(),
-                            swapCoins.last(),
-                            if (swapCoins.first().denom == Denom.UST) uusd.input.parseToDouble() else luna.input.parseToDouble(),
-                            0.0,
-                            api.getPayGas(context)
-                        )
+
+                    val swapData = Swap(
+                        swapCoins.first(),
+                        swapCoins.last(),
+                        if (swapCoins.first().denom == Denom.UST) uusd.input.parseToDouble() else luna.input.parseToDouble(),
+                        0.0,
+                        api.getPayGas(context)
                     )
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        context.launchBiometric(
+                            context,
+                            "Authenticate to swap",
+                            context.authenticationCallback(onSuccess = {
+                                onSubmit(swapData)
+                            }), unsupportedCallback = {
+                                onSubmit(swapData)
+                            })
+                    } else {
+                        onSubmit(swapData)
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
                 modifier = Modifier.fillMaxWidth(),
