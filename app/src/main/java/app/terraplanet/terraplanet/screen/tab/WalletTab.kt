@@ -158,7 +158,12 @@ fun WalletTab(activity: ComponentActivity,
             ReceiveButtonSection(
                 onDismissRequest = { showReceiveModal = false },
                 showReceiveModal = showReceiveModal
-            ) { WalletAction(text = "Receive", icon = R.drawable.icon_receive, onClick = { showReceiveModal = true }) }
+            ) { WalletAction(
+                text = "Receive",
+                icon = R.drawable.icon_receive,
+                enabled = true,
+                onClick = { showReceiveModal = true }
+            ) }
             HSpacer(10)
             SwapButtonSection(
                 swapData,
@@ -194,7 +199,12 @@ fun WalletTab(activity: ComponentActivity,
                     showSwapDialog = false
                     isSwapLoading = false
                 }
-            ) { WalletAction(text = "Swap", icon = R.drawable.icon_swap, onClick = { showSwapModal = true }) }
+            ) { WalletAction(
+                text = "Swap",
+                icon = R.drawable.icon_swap,
+                enabled = wallet.value.coins.isNotEmpty(),
+                onClick = { showSwapModal = true }
+            ) }
             HSpacer(10)
             SendButtonSection(
                 context = context,
@@ -230,7 +240,12 @@ fun WalletTab(activity: ComponentActivity,
                     showSendDialog = false
                     isSendLoading = false
                 }
-            ) { WalletAction(text = "Send", icon = R.drawable.icon_send, onClick = { showSendModal = true }) }
+            ) { WalletAction(
+                text = "Send",
+                icon = R.drawable.icon_send,
+                enabled = wallet.value.coins.isNotEmpty(),
+                onClick = { showSendModal = true }
+            ) }
         }
         VSpacer(40)
         Text("Earn (${wallet.value.rate.roundDecimal(2)}% APY)", fontSize = 24.sp, fontWeight = FontWeight.Bold)
@@ -252,13 +267,25 @@ fun WalletTab(activity: ComponentActivity,
                 )
                 VSpacer(13)
 
-                EarnButtonSection(
+                Row {
+                    DepositEarn(
+                        enabled = wallet.value.coins.find { it.denom == Denom.UST } != null,
+                        onShowDialog = { showEarnModal = true }) {
+                        isEarnDeposit = it
+                    }
+                    HSpacer(16)
+                    WithdrawEarn(
+                        enabled = wallet.value.earn > 0.0,
+                        onShowDialog = { showEarnModal = true }) {
+                        isEarnDeposit = it
+                    }
+                }
+
+                EarnModalSection(
                     coin = wallet.value.coins.find { it.denom == Denom.UST },
                     earn = wallet.value.earn,
                     isLoading = isEarnLoading,
                     isDeposit = isEarnDeposit ?: false,
-                    onEarnDeposit = { isEarnDeposit = it },
-                    onShowDialog = { showEarnModal = true },
                     onDismissRequest = { showEarnModal = false },
                     showEarnModal = showEarnModal,
                     onSubmit = { amount, deposit ->
@@ -274,7 +301,8 @@ fun WalletTab(activity: ComponentActivity,
                                 onError = {
                                     isEarnLoading = false
                                     Toast.makeText(context, "Error. Please, try again.", Toast.LENGTH_SHORT).show()
-                                })
+                                }
+                            )
                         } else {
                             model.anchorWithdraw(
                                 amount = amount,
@@ -286,7 +314,8 @@ fun WalletTab(activity: ComponentActivity,
                                 onError = {
                                     isEarnLoading = false
                                     Toast.makeText(context, "Error. Please, try again.", Toast.LENGTH_SHORT).show()
-                                })
+                                }
+                            )
                         }
                     }
                 )
@@ -361,23 +390,15 @@ private fun SendButtonSection(
 }
 
 @Composable
-private fun EarnButtonSection(
+private fun EarnModalSection(
     coin: Coin?,
     earn: Double,
     isLoading: Boolean,
     isDeposit: Boolean,
-    onEarnDeposit: (Boolean) -> Unit,
     onSubmit: (Double, Boolean) -> Unit,
-    onShowDialog: () -> Unit,
     onDismissRequest: () -> Unit,
     showEarnModal: Boolean
 ) {
-
-    Row {
-        DepositEarn(onShowDialog) { onEarnDeposit(it) }
-        HSpacer(16)
-        WithdrawEarn(onShowDialog) { onEarnDeposit(it) }
-    }
 
     if (showEarnModal) {
         coin?.let {
@@ -427,14 +448,19 @@ fun CoinItem(coin: Coin) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RowScope.WalletAction(text: String, icon: Int, onClick: () -> Unit) {
+fun RowScope.WalletAction(
+    text: String,
+    icon: Int,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(14),
-        color = MainColor,
-        modifier = Modifier.weight(1f),
-        onClick = onClick
+        color = if (enabled) MainColor else Color.Gray,
+        modifier = Modifier
+            .weight(1f)
+            .clickable(enabled = enabled) { onClick() }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -448,13 +474,16 @@ fun RowScope.WalletAction(text: String, icon: Int, onClick: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DepositEarn(onShowDialog: () -> Unit, isDeposit: (Boolean) -> Unit) {
+fun DepositEarn(
+    enabled: Boolean,
+    onShowDialog: () -> Unit,
+    isDeposit: (Boolean) -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(14),
-        color = MainColor,
-        onClick = {
+        color = if (enabled) MainColor else Color.Gray,
+        modifier = Modifier.clickable(enabled = enabled) {
             isDeposit(true)
             onShowDialog()
         }
@@ -472,13 +501,15 @@ fun DepositEarn(onShowDialog: () -> Unit, isDeposit: (Boolean) -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun WithdrawEarn(onShowDialog: () -> Unit, isDeposit: (Boolean) -> Unit) {
+fun WithdrawEarn(
+    enabled: Boolean,
+    onShowDialog: () -> Unit,
+    isDeposit: (Boolean) -> Unit) {
     Surface(
         shape = RoundedCornerShape(14),
-        color = MainColor,
-        onClick = {
+        color = if (enabled) MainColor else Color.Gray,
+        modifier = Modifier.clickable(enabled = enabled) {
             isDeposit(false)
             onShowDialog()
         }
