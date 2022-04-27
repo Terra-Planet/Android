@@ -68,17 +68,22 @@ class APIServiceImpl {
             }
             .map { data ->
                 val coins = JSONArray(data.native[0] as String)
-                coins.toList().map {
-                    val coin = JSONObject("$it")
-                    val isLuna = coin[DENOM] == Denom.LUNA.id
-                    val quantity = ("${coin[AMOUNT]}".parseToDouble() / 1000000)
-                    Coin(
-                        if (isLuna) Denom.LUNA else Denom.UST,
-                        if (isLuna) R.drawable.coin_luna else  R.drawable.coin_ust,
-                        quantity,
-                        if (isLuna) quantity * lunaPrice else quantity
-                    )
-                }.toList()
+                val supportedCoins = mutableListOf<Coin>()
+                coins.toList().forEach {
+                    val coinData = JSONObject("$it")
+                    if (supported.contains(coinData[DENOM] as String)) {
+                        val isLuna = coinData[DENOM] == Denom.LUNA.id
+                        val quantity = ("${coinData[AMOUNT]}".parseToDouble() / 1000000)
+                        val coin = Coin(
+                            if (isLuna) Denom.LUNA else Denom.UST,
+                            if (isLuna) R.drawable.coin_luna else  R.drawable.coin_ust,
+                            quantity,
+                            if (isLuna) quantity * lunaPrice else quantity
+                        )
+                        supportedCoins.add(coin)
+                    }
+                }
+                supportedCoins.toList()
             }.subscribeOn(Schedulers.io())
     }
 
@@ -342,6 +347,7 @@ class APIServiceImpl {
         private var gas = Denom.UST
 
         val auth = Storage.getAuth()
+        val supported = listOf(Denom.UST.id, Denom.LUNA.id)
     }
 }
 
