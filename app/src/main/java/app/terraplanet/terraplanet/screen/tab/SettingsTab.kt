@@ -12,10 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import app.terraplanet.terraplanet.R
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.network.Denom
 import app.terraplanet.terraplanet.network.Net
@@ -39,7 +41,7 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         VSpacer(30)
-        Text("Settings", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.settings_title), fontSize = 40.sp, fontWeight = FontWeight.Bold)
         VSpacer(30)
         Surface(
             border = BorderStroke(3.dp, MainColor),
@@ -51,7 +53,7 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Pay gas with:", fontSize = 18.sp)
+                Text(stringResource(R.string.settings_pay_gas), fontSize = 18.sp)
                 Expandable()
                 PayGasSegmented(settings)
             }
@@ -67,7 +69,7 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Network:", fontSize = 18.sp)
+                Text(stringResource(R.string.settings_network), fontSize = 18.sp)
                 Expandable()
                 NetworkSegmented(settings)
             }
@@ -76,7 +78,7 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
         Button(
             onClick = {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    context.launchBiometric(context, "Authenticate to show Seed Phrase",
+                    context.launchBiometric(context, context.getString(R.string.settings_authenticate),
                         context.authenticationCallback(onSuccess = {
                             settings.openSeedDialog()
                         }), unsupportedCallback = {
@@ -91,7 +93,7 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
             shape = RoundedCornerShape(25)
         ) {
             Text(
-                text = "See my Seed Phrase",
+                stringResource(R.string.settings_show_seed_phrase),
                 color = Color.White,
                 fontSize = 18.sp
             )
@@ -108,7 +110,7 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
             )
         ) {
             Text(
-                text = "Log Out",
+                text = stringResource(R.string.settings_logout),
                 color = Color.Red,
                 fontSize = 18.sp
             )
@@ -146,9 +148,9 @@ private fun ShowSeedDialog(
             properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
             confirmButton = {
                 TextButton(onClick = onConfirm)
-                { Text(text = "OK", fontWeight = FontWeight.Bold) }
+                { Text(stringResource(R.string.settings_show_seed_phrase_ok), fontWeight = FontWeight.Bold) }
             },
-            title = { Text("Your seed phrase is:", fontSize = 18.sp, fontWeight = FontWeight.Bold) },
+            title = { Text(stringResource(R.string.settings_show_seed_phrase_title), fontSize = 18.sp, fontWeight = FontWeight.Bold) },
             text = { Text(seedPhrase, fontSize = 16.sp) }
         )
     }
@@ -166,15 +168,14 @@ private fun ShowLogoutDialog(
             properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
             confirmButton = {
                 TextButton(onClick = onConfirm)
-                { Text(text = "Confirm", color = Color.Red) }
+                { Text(stringResource(R.string.settings_logout_confirm), color = Color.Red) }
             },
             dismissButton = {
                 TextButton(onClick = onDismiss)
-                { Text(text = "Cancel", fontWeight = FontWeight.Bold) }
+                { Text(stringResource(R.string.settings_logout_cancel), fontWeight = FontWeight.Bold) }
             },
-            title = { Text("ATTENTION", fontSize = 18.sp, fontWeight = FontWeight.Bold) },
-            text = { Text("Make sure your Seed Phrase is saved. If you don't have your Seed Phrase you will lose " +
-                    "access to your Wallet forever.", fontSize = 16.sp) }
+            title = { Text(stringResource(R.string.settings_logout_title), fontSize = 18.sp, fontWeight = FontWeight.Bold) },
+            text = { Text(stringResource(R.string.settings_logout_description), fontSize = 16.sp) }
         )
     }
 }

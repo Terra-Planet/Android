@@ -61,4 +61,20 @@
     <string name="wallet_tab_earn_withdraw">Withdraw</string>
     <string name="wallet_tab_earn_apy">Earn (%1$s%% APY)</string>
     <!-- endregion -->
+
+    <!-- region Settings tab screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_pay_gas">Pay gas with:</string>
+    <string name="settings_network">Network:</string>
+    <string name="settings_show_seed_phrase">Show my Seed Phrase</string>
+    <string name="settings_logout">Log Out</string>
+    <string name="settings_authenticate">Authenticate to show Seed Phrase</string>
+    <string name="settings_show_seed_phrase_ok">OK</string>
+    <string name="settings_show_seed_phrase_title">Your seed phrase is:</string>
+    <string name="settings_logout_confirm">Confirm</string>
+    <string name="settings_logout_cancel">Cancel</string>
+    <string name="settings_logout_title">ATTENTION</string>
+    <string name="settings_logout_description">Make sure your Seed Phrase is saved. If you don\'t have your Seed
+        Phrase you will lose access to your Wallet forever.</string>
+    <!-- endregion -->
 </resources>
