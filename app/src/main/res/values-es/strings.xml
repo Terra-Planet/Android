@@ -40,4 +40,10 @@
     <string name="import_wallet_seed_phrase">Frase semilla:</string>
     <string name="import_wallet_continue">CONTINUAR</string>
     <!-- endregion -->
+
+    <!-- region Bottom navigation -->
+    <string name="bottom_navigation_wallet">Billetera</string>
+    <string name="bottom_navigation_transactions">Transacciones</string>
+    <string name="bottom_navigation_settings">Ajustes</string>
+    <!-- endregion -->
 </resources>
