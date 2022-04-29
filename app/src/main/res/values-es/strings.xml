@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Terra Planet</string>
+
+    <string name="init_app_description">La Billetera de Terra no-custodiada y de código abierto.</string>
+    <string name="init_create_wallet">CREAR NUEVA BILLETERA</string>
+    <string name="init_import_wallet">IMPORTAR BILLETERA</string>
+</resources>
