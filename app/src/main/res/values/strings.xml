@@ -26,6 +26,14 @@
     <string name="init_import_wallet">IMPORT WALLET</string>
     <!-- endregion -->
 
+    <!-- region Init Wallet screen -->
+    <string name="init_wallet_your_wallet">Your Wallet</string>
+    <string name="init_wallet_address">Address:</string>
+    <string name="init_wallet_seed_phrase">Seed Phrase:</string>
+    <string name="init_wallet_description">Please store your seed phrase securely. We would not be able to recover your wallet if you lose it. We suggest copying it on paper.</string>
+    <string name="init_wallet_continue">CONTINUE</string>
+    <!-- endregion -->
+
     <!-- region Import Wallet screen -->
     <string name="import_wallet_import_wallet">Import Wallet</string>
     <string name="import_wallet_seed_phrase">Seed Phrase:</string>
