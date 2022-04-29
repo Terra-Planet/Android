@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -79,7 +80,7 @@ private fun InitScreen(onWallet: () -> Unit, onImport: () -> Unit) {
                 )
                 VSpacer(30)
                 Text(
-                    text = "The open source non-custodial Terra Wallet.",
+                    text = stringResource(R.string.init_app_description),
                     color = Color.White,
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,
@@ -93,7 +94,7 @@ private fun InitScreen(onWallet: () -> Unit, onImport: () -> Unit) {
                     shape = RoundedCornerShape(25)
                 ) {
                     Text(
-                        text = "CREATE NEW WALLET",
+                        text = stringResource(R.string.init_create_wallet),
                         color = MainColor,
                         fontWeight = FontWeight.Bold,
                     )
@@ -110,7 +111,7 @@ private fun InitScreen(onWallet: () -> Unit, onImport: () -> Unit) {
                     )
                 ) {
                     Text(
-                        text = "IMPORT WALLET",
+                        text = stringResource(R.string.init_import_wallet),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                     )
