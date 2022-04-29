@@ -45,4 +45,20 @@
     <string name="bottom_navigation_transactions">Transactions</string>
     <string name="bottom_navigation_settings">Settings</string>
     <!-- endregion -->
+
+    <!-- region Wallet tab screen -->
+    <string name="wallet_tab_total_balance">Total Balance</string>
+    <string name="wallet_tab_your_coins">Your Coins</string>
+    <string name="wallet_tab_no_coins">You don\'t own coins yet</string>
+    <string name="wallet_tab_error_getting_coins">Error getting coins, try again</string>
+    <string name="wallet_tab_getting_coins">Getting coins...</string>
+    <string name="wallet_tab_actions">Actions</string>
+    <string name="wallet_tab_swap">Swap</string>
+    <string name="wallet_tab_send">Send</string>
+    <string name="wallet_tab_receive">Receive</string>
+    <string name="wallet_tab_earn_modal_error">Error. Please, try again.</string>
+    <string name="wallet_tab_earn_deposit">Deposit</string>
+    <string name="wallet_tab_earn_withdraw">Withdraw</string>
+    <string name="wallet_tab_earn_apy">Earn (%1$s%% APY)</string>
+    <!-- endregion -->
 </resources>

@@ -3,10 +3,13 @@ package app.terraplanet.terraplanet.screen.tab
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
@@ -16,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -96,7 +100,7 @@ fun WalletTab(activity: ComponentActivity,
         }
         VSpacer(20)
         Row {
-            Text("Total Balance", fontSize = 20.sp)
+            Text(stringResource(R.string.wallet_tab_total_balance), fontSize = 20.sp)
             HSpacer(5)
             Icon(
                 painter = rememberVectorPainter(image = Icons.Default.Refresh),
@@ -107,7 +111,7 @@ fun WalletTab(activity: ComponentActivity,
         VSpacer(6)
         Text("$${wallet.value.amount}", fontSize = 50.sp, fontWeight = FontWeight.Bold)
         VSpacer(30)
-        Text("Your Coins", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.wallet_tab_your_coins), fontSize = 24.sp, fontWeight = FontWeight.Bold)
         VSpacer(6)
         Surface(
             shape = RoundedCornerShape(10),
@@ -121,7 +125,7 @@ fun WalletTab(activity: ComponentActivity,
                 when(wallet.value.state) {
                     State.SUCCESS -> {
                         if (wallet.value.coins.isEmpty()) {
-                            Text(text = "You don't own coins yet",
+                            Text(stringResource(R.string.wallet_tab_no_coins),
                                 color = Color.LightGray,
                                 fontStyle = FontStyle.Italic,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
@@ -134,12 +138,12 @@ fun WalletTab(activity: ComponentActivity,
                             }
                         }
                     }
-                    State.FAILED -> Text(text = "Error getting coins, try again",
+                    State.FAILED -> Text(stringResource(R.string.wallet_tab_error_getting_coins),
                         color = Color.LightGray,
                         fontStyle = FontStyle.Italic,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
                     )
-                    State.LOADING -> Text(text = "Getting coins...",
+                    State.LOADING -> Text(stringResource(R.string.wallet_tab_getting_coins),
                         color = Color.LightGray,
                         fontStyle = FontStyle.Italic,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
@@ -149,7 +153,7 @@ fun WalletTab(activity: ComponentActivity,
             }
         }
         VSpacer(30)
-        Text("Actions", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.wallet_tab_actions), fontSize = 24.sp, fontWeight = FontWeight.Bold)
         VSpacer(8)
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -159,7 +163,7 @@ fun WalletTab(activity: ComponentActivity,
                 onDismissRequest = { showReceiveModal = false },
                 showReceiveModal = showReceiveModal
             ) { WalletAction(
-                text = "Receive",
+                text = stringResource(R.string.wallet_tab_receive),
                 icon = R.drawable.icon_receive,
                 enabled = true,
                 onClick = { showReceiveModal = true }
@@ -201,7 +205,7 @@ fun WalletTab(activity: ComponentActivity,
                     isSwapLoading = false
                 }
             ) { WalletAction(
-                text = "Swap",
+                text = stringResource(R.string.wallet_tab_swap),
                 icon = R.drawable.icon_swap,
                 enabled = wallet.value.coins.isNotEmpty(),
                 onClick = { showSwapModal = true }
@@ -242,14 +246,17 @@ fun WalletTab(activity: ComponentActivity,
                     isSendLoading = false
                 }
             ) { WalletAction(
-                text = "Send",
+                text = stringResource(R.string.wallet_tab_send),
                 icon = R.drawable.icon_send,
                 enabled = wallet.value.coins.isNotEmpty(),
                 onClick = { showSendModal = true }
             ) }
         }
         VSpacer(40)
-        Text("Earn (${wallet.value.rate.roundDecimal(2)}% APY)", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.wallet_tab_earn_apy, wallet.value.rate.roundDecimal(2)),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
         VSpacer(8)
         Surface(
             border = BorderStroke(3.dp, MainColor),
@@ -302,7 +309,7 @@ fun WalletTab(activity: ComponentActivity,
                                 },
                                 onError = {
                                     isEarnLoading = false
-                                    Toast.makeText(context, "Error. Please, try again.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, R.string.wallet_tab_earn_modal_error, Toast.LENGTH_SHORT).show()
                                 }
                             )
                         } else {
@@ -315,7 +322,7 @@ fun WalletTab(activity: ComponentActivity,
                                 },
                                 onError = {
                                     isEarnLoading = false
-                                    Toast.makeText(context, "Error. Please, try again.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, R.string.wallet_tab_earn_modal_error, Toast.LENGTH_SHORT).show()
                                 }
                             )
                         }
@@ -455,7 +462,7 @@ fun CoinItem(coin: Coin) {
 @Composable
 fun RowScope.WalletAction(
     text: String,
-    icon: Int,
+    @DrawableRes icon: Int,
     enabled: Boolean,
     onClick: () -> Unit
 ) {
@@ -499,7 +506,7 @@ fun DepositEarn(
             HSpacer(16)
             Icon(painter = painterResource(id = R.drawable.icon_deposit), contentDescription = null, tint = Color.White)
             HSpacer(8)
-            Text("Deposit", color = Color.White, fontSize = 20.sp)
+            Text(stringResource(R.string.wallet_tab_earn_deposit), color = Color.White, fontSize = 20.sp)
             HSpacer(16)
         }
     }
@@ -529,7 +536,7 @@ fun WithdrawEarn(
                 tint = Color.White
             )
             HSpacer(8)
-            Text("Withdraw", color = Color.White, fontSize = 20.sp)
+            Text(stringResource(R.string.wallet_tab_earn_withdraw), color = Color.White, fontSize = 20.sp)
             HSpacer(16)
         }
     }
