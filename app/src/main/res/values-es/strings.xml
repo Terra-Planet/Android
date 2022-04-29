@@ -26,6 +26,15 @@
     <string name="init_import_wallet">IMPORTAR BILLETERA</string>
     <!-- endregion -->
 
+    <!-- region Init Wallet screen -->
+    <string name="init_wallet_your_wallet">Tu Billetera</string>
+    <string name="init_wallet_address">Dirección:</string>
+    <string name="init_wallet_seed_phrase">Frase semilla:</string>
+    <string name="init_wallet_description">Por favor, guarda tu frase semilla de forma segura. No podremos recuperar
+        tu billetera si la pierdes. Sugerimos que la escribas en papel.</string>
+    <string name="init_wallet_continue">CONTINUAR</string>
+    <!-- endregion -->
+
     <!-- region Import Wallet screen -->
     <string name="import_wallet_import_wallet">Importar Billetera</string>
     <string name="import_wallet_seed_phrase">Frase semilla:</string>
