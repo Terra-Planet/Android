@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -108,7 +109,7 @@ fun SwapModal(
                     )
                 }
             }
-            Text("Swap", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.swap_title), fontSize = 40.sp, fontWeight = FontWeight.Bold)
             VSpacer(30)
             Surface(
                 border = BorderStroke(3.dp, MainColor),
@@ -223,7 +224,7 @@ fun SwapModal(
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         context.launchBiometric(
                             context,
-                            "Authenticate to swap",
+                            context.getString(R.string.swap_authenticate),
                             context.authenticationCallback(onSuccess = {
                                 onSubmit(swapData)
                             }), unsupportedCallback = {
@@ -239,7 +240,7 @@ fun SwapModal(
                 enabled = (uusd.valid && uusd.input.parseToDouble() > 0.0) && (luna.valid && luna.input.parseToDouble() > 0.0)
             ) {
                 Text(
-                    text = "SWAP",
+                    stringResource(R.string.swap_dialog_title),
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(5.dp)
@@ -342,15 +343,15 @@ private fun ShowSwapDialog(
                 properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
                 confirmButton = {
                     TextButton(onClick = onConfirm)
-                    { Text(text = "Sign it!", fontSize = 18.sp) }
+                    { Text(stringResource(R.string.swap_dialog_sign), fontSize = 18.sp) }
                 },
                 dismissButton = {
                     TextButton(onClick = onDismiss)
-                    { Text(text = "Cancel", fontSize = 18.sp) }
+                    { Text(stringResource(R.string.swap_dialog_cancel), fontSize = 18.sp) }
                 },
                 title = {
                     Text(
-                        "SWAP",
+                        stringResource(R.string.swap_dialog_title),
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -358,10 +359,10 @@ private fun ShowSwapDialog(
                 },
                 text = {
                     Text(
-                        text =  "From: ${it.from.denom.label}\n" +
-                                "To: ${it.to.denom.label}\n\n" +
-                                "Amount: ${if (it.from.denom == Denom.LUNA) it.amount * lunaPrice else it.amount / lunaPrice}\n\n" +
-                                "Fee: ${swap.fee} ${swap.pay.label}",
+                        text = stringResource(R.string.swap_dialog_description_from, it.from.denom.label)+ "\n" +
+                                stringResource(R.string.swap_dialog_description_to, it.to.denom.label)+ "\n\n" +
+                                stringResource(R.string.swap_dialog_description_amount, if (it.from.denom == Denom.LUNA) it.amount * lunaPrice else it.amount / lunaPrice)+ "\n\n" +
+                                stringResource(R.string.swap_dialog_description_fee, swap.pay.label),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 18.sp
