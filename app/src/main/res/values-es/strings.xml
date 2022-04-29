@@ -46,4 +46,20 @@
     <string name="bottom_navigation_transactions">Transacciones</string>
     <string name="bottom_navigation_settings">Ajustes</string>
     <!-- endregion -->
+
+    <!-- region Wallet tab screen -->
+    <string name="wallet_tab_total_balance">Balance Total</string>
+    <string name="wallet_tab_your_coins">Tus Monedas</string>
+    <string name="wallet_tab_no_coins">No tienes monedas todavía</string>
+    <string name="wallet_tab_error_getting_coins">Error obteniendo monedas, intente nuevamente</string>
+    <string name="wallet_tab_getting_coins">Obteniendo monedas...</string>
+    <string name="wallet_tab_actions">Acciones</string>
+    <string name="wallet_tab_swap">Cambiar</string>
+    <string name="wallet_tab_send">Enviar</string>
+    <string name="wallet_tab_receive">Recibir</string>
+    <string name="wallet_tab_earn_modal_error">Error. Por favor, intente nuevamente.</string>
+    <string name="wallet_tab_earn_deposit">Depositar</string>
+    <string name="wallet_tab_earn_withdraw">Retirar</string>
+    <string name="wallet_tab_earn_apy">Ganar (%1$s%% APY)</string>
+    <!-- endregion -->
 </resources>
