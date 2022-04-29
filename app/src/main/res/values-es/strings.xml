@@ -2,6 +2,24 @@
 <resources>
     <string name="app_name">Terra Planet</string>
 
+    <!-- region Server status -->
+    <string name="server_status">Estado del servidor...</string>
+    <string name="server_status_failed">El servidor falló. Cierra la app e intent nuevamente</string>
+    <string name="server_status_starting">Iniciando el servidor...</string>
+    <string name="server_status_connecting">Conectando con el servidor...</string>
+    <string name="server_status_connected">Conectado con el servidor</string>
+    <string name="server_status_error">Error del servidor</string>
+    <string name="server_status_running">Ejecutando el servidor...</string>
+    <!-- endregion -->
+
+    <!-- region Biometrics -->
+    <string name="biometrics_authenticate">Autenticar con datos biométricos</string>
+    <string name="biometrics_cancel">Cancelar</string>
+    <string name="biometrics_successful">Autenticación exitosa</string>
+    <string name="biometrics_canceled">Autenticación cancelada</string>
+    <string name="biometrics_error">Error. Intente nuevamente</string>
+    <!-- endregion -->
+
     <!-- region Init screen -->
     <string name="init_app_description">La Billetera de Terra no-custodiada y de código abierto.</string>
     <string name="init_create_wallet">CREAR NUEVA BILLETERA</string>
