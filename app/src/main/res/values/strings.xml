@@ -2,6 +2,24 @@
 <resources>
     <string name="app_name">Terra Planet</string>
 
+    <!-- region Server status -->
+    <string name="server_status">Server status...</string>
+    <string name="server_status_failed">Server failed. Close the app and try again</string>
+    <string name="server_status_starting">Server starting...</string>
+    <string name="server_status_connecting">Server connecting...</string>
+    <string name="server_status_connected">Server connected</string>
+    <string name="server_status_error">Server error</string>
+    <string name="server_status_running">Server running...</string>
+    <!-- endregion -->
+
+    <!-- region Biometrics -->
+    <string name="biometrics_authenticate">Authenticate with Biometrics</string>
+    <string name="biometrics_cancel">Cancel</string>
+    <string name="biometrics_successful">Auth Successful</string>
+    <string name="biometrics_canceled">Auth Canceled</string>
+    <string name="biometrics_error">Error. Try Again</string>
+    <!-- endregion -->
+
     <!-- region Init screen -->
     <string name="init_app_description">The open source non-custodial Terra Wallet.</string>
     <string name="init_create_wallet">CREATE NEW WALLET</string>

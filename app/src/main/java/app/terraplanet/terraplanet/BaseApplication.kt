@@ -42,8 +42,8 @@ class BaseApplication : Application() {
         }
     }
 
-    fun startServer(auth: Auth, status: (String) -> Unit, result: (Boolean) -> Unit) {
-        status("Server starting...")
+    fun startServer(auth: Auth, status: (Int) -> Unit, result: (Boolean) -> Unit) {
+        status(R.string.server_status_starting)
         ioThread = Thread {
             val nodeDir = applicationContext.filesDir.absolutePath + "/nodejs-project"
             val nodeDirReference = File(nodeDir)
@@ -51,7 +51,7 @@ class BaseApplication : Application() {
                 AppUtil.deleteFolderRecursively(File(nodeDir))
             }
             AppUtil.copyAssetFolder(applicationContext.assets, "nodejs-project", nodeDir)
-            uiThread.post { status("Server connecting...") }
+            uiThread.post { status(R.string.server_status_connecting) }
             try {
                 startNodeWithArguments(
                     arrayOf("node", "$nodeDir/bin/www", auth.username, auth.password)
@@ -74,25 +74,25 @@ class BaseApplication : Application() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 disposable?.dispose()
-                status("Server connected")
+                status(R.string.server_status_connected)
                 result(ping)
             }, {
                 disposable?.dispose()
-                status("Server error")
+                status(R.string.server_status_error)
                 result(ping)
                 Log.e(LOG_E, "${it.message}")
             })
     }
 
-    fun checkServerStatus(status: (String) -> Unit, result: (Boolean) -> Unit) {
+    fun checkServerStatus(status: (Int) -> Unit, result: (Boolean) -> Unit) {
         val auth = Storage.getAuth()
         var value: Boolean
-        status("Server status...")
+        status(R.string.server_status)
         api.getStatus()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ data ->
                 value = data.status == OK
-                if (value) status("Server running...")
+                if (value) status(R.string.server_status_running)
                 result(value)
             }, {
                 value = false

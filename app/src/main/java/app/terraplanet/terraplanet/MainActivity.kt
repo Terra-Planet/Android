@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
@@ -35,10 +37,10 @@ import app.terraplanet.terraplanet.util.bitmapDrawable
 import app.terraplanet.terraplanet.viewmodel.State
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-data class LoginState(val state: State, val status: String, val loading: Boolean)
+data class LoginState(val state: State, @StringRes val status: Int, val loading: Boolean)
 
 class MainActivity : FragmentActivity() {
-    var status = mutableStateOf(LoginState(State.LOADING, "Server status...", true))
+    var status = mutableStateOf(LoginState(State.LOADING, R.string.server_status, true))
     val app by lazy { (applicationContext as BaseApplication) }
     val api = APIServiceImpl()
 
@@ -69,7 +71,7 @@ class MainActivity : FragmentActivity() {
                     goToInitScreen()
                 }
             } else {
-                status.value = LoginState(State.FAILED, "Server failed. Close the app and try again", false)
+                status.value = LoginState(State.FAILED, R.string.server_status_failed, false)
             }
         })
     }
@@ -96,18 +98,18 @@ class MainActivity : FragmentActivity() {
         object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
-                status.value = LoginState(State.SUCCESS, "Auth Successful", false)
+                status.value = LoginState(State.SUCCESS, R.string.biometrics_successful, false)
                 goToHomeScreen()
             }
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                status.value = LoginState(State.CANCELLED, "Auth Canceled", false)
+                status.value = LoginState(State.CANCELLED, R.string.biometrics_canceled, false)
             }
 
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
-                status.value = LoginState(State.CANCELLED, "Error. Try Again", false)
+                status.value = LoginState(State.CANCELLED, R.string.biometrics_error, false)
             }
         }
 
@@ -115,16 +117,16 @@ class MainActivity : FragmentActivity() {
     private fun launchBiometric(context: Context, authenticationCallback: BiometricPrompt.AuthenticationCallback) {
         if (checkBiometricSupport(context)) {
             val biometricPromptInfo = BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Terra Planet")
-                .setDescription("Authenticate with Biometrics")
-                .setNegativeButtonText("Cancel")
+                .setTitle(getString(R.string.app_name))
+                .setDescription(getString(R.string.biometrics_authenticate))
+                .setNegativeButtonText(getString(R.string.biometrics_cancel))
                 .setConfirmationRequired(true)
                 .build()
 
             val biometricPrompt = BiometricPrompt(this, mainExecutor, authenticationCallback)
             biometricPrompt.authenticate(biometricPromptInfo)
         } else {
-            status.value = LoginState(State.SUCCESS, "Auth Successful", false)
+            status.value = LoginState(State.SUCCESS, R.string.biometrics_successful, false)
             goToHomeScreen()
         }
     }
@@ -166,7 +168,7 @@ private fun LoadingScreen(state: LoginState, onBiometrics: () -> Unit) {
                     }
                 }
                 VSpacer(20)
-                Text(state.status, color = Color.White, textAlign = TextAlign.Center)
+                Text(stringResource(state.status), color = Color.White, textAlign = TextAlign.Center)
                 VSpacer(50)
             }
         }
