@@ -70,6 +70,19 @@
     <string name="receive_address_clipboard_message">Dirección copiada</string>
     <!-- endregion -->
 
+    <!-- region Swap screen -->
+    <string name="swap_title">Cambiar</string>
+    <string name="swap_action">Cambiar</string>
+    <string name="swap_dialog_cancel">Cancelar</string>
+    <string name="swap_dialog_sign">¡Firmar!</string>
+    <string name="swap_dialog_title">CAMBIAR</string>
+    <string name="swap_dialog_description_from">De: %1$s</string>
+    <string name="swap_dialog_description_to">Para: %1$s</string>
+    <string name="swap_dialog_description_amount">Monto: %1$s</string>
+    <string name="swap_dialog_description_fee">Comisión: %1$s</string>
+    <string name="swap_authenticate">Autenticar para cambiar</string>
+    <!-- endregion -->
+
     <!-- region Settings tab screen -->
     <string name="settings_title">Ajustes</string>
     <string name="settings_pay_gas">Pagar el gas con:</string>
