@@ -2,7 +2,15 @@
 <resources>
     <string name="app_name">Terra Planet</string>
 
+    <!-- region Init screen -->
     <string name="init_app_description">La Billetera de Terra no-custodiada y de código abierto.</string>
     <string name="init_create_wallet">CREAR NUEVA BILLETERA</string>
     <string name="init_import_wallet">IMPORTAR BILLETERA</string>
+    <!-- endregion -->
+
+    <!-- region Import Wallet screen -->
+    <string name="import_wallet_import_wallet">Importar Billetera</string>
+    <string name="import_wallet_seed_phrase">Frase semilla:</string>
+    <string name="import_wallet_continue">CONTINUAR</string>
+    <!-- endregion -->
 </resources>
