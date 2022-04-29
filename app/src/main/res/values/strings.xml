@@ -39,4 +39,10 @@
     <string name="import_wallet_seed_phrase">Seed Phrase:</string>
     <string name="import_wallet_continue">CONTINUE</string>
     <!-- endregion -->
+
+    <!-- region Bottom navigation -->
+    <string name="bottom_navigation_wallet">Wallet</string>
+    <string name="bottom_navigation_transactions">Transactions</string>
+    <string name="bottom_navigation_settings">Settings</string>
+    <!-- endregion -->
 </resources>
