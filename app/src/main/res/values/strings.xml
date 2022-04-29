@@ -2,7 +2,15 @@
 <resources>
     <string name="app_name">Terra Planet</string>
 
+    <!-- region Init screen -->
     <string name="init_app_description">The open source non-custodial Terra Wallet.</string>
     <string name="init_create_wallet">CREATE NEW WALLET</string>
     <string name="init_import_wallet">IMPORT WALLET</string>
+    <!-- endregion -->
+
+    <!-- region Import Wallet screen -->
+    <string name="import_wallet_import_wallet">Import Wallet</string>
+    <string name="import_wallet_seed_phrase">Seed Phrase:</string>
+    <string name="import_wallet_continue">CONTINUE</string>
+    <!-- endregion -->
 </resources>
