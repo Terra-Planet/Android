@@ -62,6 +62,13 @@
     <string name="wallet_tab_earn_apy">Earn (%1$s%% APY)</string>
     <!-- endregion -->
 
+    <!-- region Receive screen -->
+    <string name="receive_address">Address:</string>
+    <string name="receive_address_copy">Copy Address</string>
+    <string name="receive_address_clipboard_clip">Wallet Address</string>
+    <string name="receive_address_clipboard_message">Address copied</string>
+    <!-- endregion -->
+
     <!-- region Settings tab screen -->
     <string name="settings_title">Settings</string>
     <string name="settings_pay_gas">Pay gas with:</string>
