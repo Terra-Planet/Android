@@ -62,4 +62,20 @@
     <string name="wallet_tab_earn_withdraw">Retirar</string>
     <string name="wallet_tab_earn_apy">Ganar (%1$s%% APY)</string>
     <!-- endregion -->
+
+    <!-- region Settings tab screen -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_pay_gas">Pagar el gas con:</string>
+    <string name="settings_network">Red:</string>
+    <string name="settings_show_seed_phrase">Mostrar mi Frase Semilla</string>
+    <string name="settings_logout">Cerrar sesión</string>
+    <string name="settings_authenticate">Autenticar para mostrar la Frase Semilla</string>
+    <string name="settings_show_seed_phrase_ok">OK</string>
+    <string name="settings_show_seed_phrase_title">Tu frase semilla es:</string>
+    <string name="settings_logout_confirm">Confirmar</string>
+    <string name="settings_logout_cancel">Cancelar</string>
+    <string name="settings_logout_title">ATENCIÓN</string>
+    <string name="settings_logout_description">Asegúrate de tener guardada la Frase Semilla. Si no tienes tu Frase
+        semilla perderás acceso a tu Billetera para siempre.</string>
+    <!-- endregion -->
 </resources>
