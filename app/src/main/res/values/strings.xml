@@ -122,4 +122,8 @@
     <string name="settings_logout_description">Make sure your Seed Phrase is saved. If you don\'t have your Seed
         Phrase you will lose access to your Wallet forever.</string>
     <!-- endregion -->
+
+    <!-- region Camera screen -->
+    <string name="camera_qr_scan">Scan a Terra address QR Code</string>
+    <!-- endregion -->
 </resources>
