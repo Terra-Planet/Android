@@ -123,4 +123,8 @@
     <string name="settings_logout_description">Asegúrate de tener guardada la Frase Semilla. Si no tienes tu Frase
         semilla perderás acceso a tu Billetera para siempre.</string>
     <!-- endregion -->
+
+    <!-- region Camera screen -->
+    <string name="camera_qr_scan">Escanea un Código QR de una dirección Terra</string>
+    <!-- endregion -->
 </resources>
