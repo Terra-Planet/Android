@@ -83,6 +83,31 @@
     <string name="swap_authenticate">Autenticar para cambiar</string>
     <!-- endregion -->
 
+    <!-- region Send screen -->
+    <string name="send_title">Enviar a</string>
+    <string name="send_address_title">Dirección:</string>
+    <string name="send_address_paste">Pegar</string>
+    <string name="send_address_invalid">Dirección Terra inválida</string>
+    <string name="send_coin_title">Moneda:</string>
+    <string name="send_coin_select">Seleccione Moneda</string>
+    <string name="send_amount_title">Monto:</string>
+    <string name="send_balance">Balance:</string>
+    <string name="send_max">Máx</string>
+    <string name="send_action">ENVIAR</string>
+    <string name="send_memo">Memo (opcional):</string>
+    <string name="send_dialog_cancel">Cancelar</string>
+    <string name="send_dialog_sign">¡Firmar!</string>
+    <string name="send_dialog_title">ENVIAR</string>
+    <string name="send_dialog_title_attention">ATENCIÓN</string>
+    <string name="send_dialog_description_from">De: %1$s</string>
+    <string name="send_dialog_description_to">Para: %1$s</string>
+    <string name="send_dialog_description_amount">Monto: %1$s</string>
+    <string name="send_dialog_description_fee">Comisión: %1$s %2$s</string>
+    <string name="send_dialog_description_not_enough_balance">No tienes suficiente %1$s en tu balance para pagar
+        comisiones y realizar esta acción.</string>
+    <string name="send_authenticate">Autenticar para enviar la transacción</string>
+    <!-- endregion -->
+
     <!-- region Settings tab screen -->
     <string name="settings_title">Ajustes</string>
     <string name="settings_pay_gas">Pagar el gas con:</string>
