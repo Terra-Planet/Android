@@ -78,7 +78,7 @@
     <string name="swap_dialog_description_from">From: %1$s</string>
     <string name="swap_dialog_description_to">To: %1$s</string>
     <string name="swap_dialog_description_amount">Amount: %1$s</string>
-    <string name="swap_dialog_description_fee">Fee: %1$s</string>
+    <string name="swap_dialog_description_fee">Fee: %1$s %2$s</string>
     <string name="swap_authenticate">Authenticate to swap</string>
     <!-- endregion -->
 

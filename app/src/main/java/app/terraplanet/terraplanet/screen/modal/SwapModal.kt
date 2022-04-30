@@ -362,7 +362,7 @@ private fun ShowSwapDialog(
                         text = stringResource(R.string.swap_dialog_description_from, it.from.denom.label)+ "\n" +
                                 stringResource(R.string.swap_dialog_description_to, it.to.denom.label)+ "\n\n" +
                                 stringResource(R.string.swap_dialog_description_amount, if (it.from.denom == Denom.LUNA) it.amount * lunaPrice else it.amount / lunaPrice)+ "\n\n" +
-                                stringResource(R.string.swap_dialog_description_fee, swap.pay.label),
+                                stringResource(R.string.swap_dialog_description_fee, swap.fee, swap.pay.label),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 18.sp
