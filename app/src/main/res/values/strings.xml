@@ -82,6 +82,31 @@
     <string name="swap_authenticate">Authenticate to swap</string>
     <!-- endregion -->
 
+    <!-- region Send screen -->
+    <string name="send_title">Send To</string>
+    <string name="send_address_title">Address:</string>
+    <string name="send_address_paste">Paste</string>
+    <string name="send_address_invalid">Not a valid Terra address</string>
+    <string name="send_coin_title">Coin:</string>
+    <string name="send_coin_select">Select Coin</string>
+    <string name="send_amount_title">Amount:</string>
+    <string name="send_balance">Balance:</string>
+    <string name="send_max">Max</string>
+    <string name="send_action">SEND</string>
+    <string name="send_memo">Memo (optional):</string>
+    <string name="send_dialog_cancel">Cancel</string>
+    <string name="send_dialog_sign">Sign it!</string>
+    <string name="send_dialog_title">SEND</string>
+    <string name="send_dialog_title_attention">ATTENTION</string>
+    <string name="send_dialog_description_from">From: %1$s</string>
+    <string name="send_dialog_description_to">To: %1$s</string>
+    <string name="send_dialog_description_amount">Amount: %1$s</string>
+    <string name="send_dialog_description_fee">Fee: %1$s %2$s</string>
+    <string name="send_dialog_description_not_enough_balance">You don\'t have enough %1$s balance to pay fees and
+        perform this action.</string>
+    <string name="send_authenticate">Authenticate to send transaction</string>
+    <!-- endregion -->
+
     <!-- region Settings tab screen -->
     <string name="settings_title">Settings</string>
     <string name="settings_pay_gas">Pay gas with:</string>
