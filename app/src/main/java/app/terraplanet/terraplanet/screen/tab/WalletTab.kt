@@ -89,7 +89,7 @@ fun WalletTab(activity: ComponentActivity,
                 .clickable { navigateToSettings() }, color = Orange) {
                 Center {
                     Text(
-                        text = Net.TEST.label.uppercase(),
+                        Net.TEST.label.uppercase(),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -163,7 +163,7 @@ fun WalletTab(activity: ComponentActivity,
                 onDismissRequest = { showReceiveModal = false },
                 showReceiveModal = showReceiveModal
             ) { WalletAction(
-                text = stringResource(R.string.wallet_tab_receive),
+                stringResource(R.string.wallet_tab_receive),
                 icon = R.drawable.icon_receive,
                 enabled = true,
                 onClick = { showReceiveModal = true }
@@ -205,7 +205,7 @@ fun WalletTab(activity: ComponentActivity,
                     isSwapLoading = false
                 }
             ) { WalletAction(
-                text = stringResource(R.string.wallet_tab_swap),
+                stringResource(R.string.wallet_tab_swap),
                 icon = R.drawable.icon_swap,
                 enabled = wallet.value.coins.isNotEmpty(),
                 onClick = { showSwapModal = true }
@@ -246,7 +246,7 @@ fun WalletTab(activity: ComponentActivity,
                     isSendLoading = false
                 }
             ) { WalletAction(
-                text = stringResource(R.string.wallet_tab_send),
+                stringResource(R.string.wallet_tab_send),
                 icon = R.drawable.icon_send,
                 enabled = wallet.value.coins.isNotEmpty(),
                 onClick = { showSendModal = true }
@@ -269,7 +269,7 @@ fun WalletTab(activity: ComponentActivity,
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "$${wallet.value.earn.roundDecimal(2)}",
+                    "$${wallet.value.earn.roundDecimal(2)}",
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
                 )

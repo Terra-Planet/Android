@@ -84,7 +84,7 @@ private fun ImportWallet(loading: Boolean, onContinue: (String) -> Unit) {
             ) {
                 VSpacer(30)
                 Text(
-                    text = stringResource(R.string.import_wallet_import_wallet),
+                    stringResource(R.string.import_wallet_import_wallet),
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -93,7 +93,7 @@ private fun ImportWallet(loading: Boolean, onContinue: (String) -> Unit) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = stringResource(R.string.import_wallet_seed_phrase),
+                        stringResource(R.string.import_wallet_seed_phrase),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -120,7 +120,7 @@ private fun ImportWallet(loading: Boolean, onContinue: (String) -> Unit) {
                     )
                 ) {
                     Text(
-                        text = stringResource(R.string.import_wallet_continue),
+                        stringResource(R.string.import_wallet_continue),
                         color = MainColor,
                         fontWeight = FontWeight.Bold,
                     )

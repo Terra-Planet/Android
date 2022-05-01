@@ -88,7 +88,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                 ) {
                     VSpacer(30)
                     Text(
-                        text = stringResource(R.string.init_wallet_your_wallet),
+                        stringResource(R.string.init_wallet_your_wallet),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                     )
@@ -97,7 +97,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = stringResource(R.string.init_wallet_address),
+                            stringResource(R.string.init_wallet_address),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -122,7 +122,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = stringResource(R.string.init_wallet_seed_phrase),
+                            stringResource(R.string.init_wallet_seed_phrase),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -141,9 +141,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                         )
                     }
                     VSpacer(10)
-                    Text(
-                        text = stringResource(R.string.init_wallet_description),
-                    )
+                    Text(stringResource(R.string.init_wallet_description))
                     Expandable()
                     Button(
                         onClick = { onContinue() },
@@ -156,7 +154,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                         )
                     ) {
                         Text(
-                            text = stringResource(R.string.init_wallet_continue),
+                            stringResource(R.string.init_wallet_continue),
                             color = MainColor,
                             fontWeight = FontWeight.Bold,
                         )

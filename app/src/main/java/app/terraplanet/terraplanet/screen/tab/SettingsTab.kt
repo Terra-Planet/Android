@@ -110,7 +110,7 @@ fun SettingsTab(activity: ComponentActivity, settings: SettingsViewModel) {
             )
         ) {
             Text(
-                text = stringResource(R.string.settings_logout),
+                stringResource(R.string.settings_logout),
                 color = Color.Red,
                 fontSize = 18.sp
             )

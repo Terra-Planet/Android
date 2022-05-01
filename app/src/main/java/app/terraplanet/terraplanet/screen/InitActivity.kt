@@ -80,7 +80,7 @@ private fun InitScreen(onWallet: () -> Unit, onImport: () -> Unit) {
                 )
                 VSpacer(30)
                 Text(
-                    text = stringResource(R.string.init_app_description),
+                    stringResource(R.string.init_app_description),
                     color = Color.White,
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,
@@ -94,7 +94,7 @@ private fun InitScreen(onWallet: () -> Unit, onImport: () -> Unit) {
                     shape = RoundedCornerShape(25)
                 ) {
                     Text(
-                        text = stringResource(R.string.init_create_wallet),
+                        stringResource(R.string.init_create_wallet),
                         color = MainColor,
                         fontWeight = FontWeight.Bold,
                     )
@@ -111,7 +111,7 @@ private fun InitScreen(onWallet: () -> Unit, onImport: () -> Unit) {
                     )
                 ) {
                     Text(
-                        text = stringResource(R.string.init_import_wallet),
+                        stringResource(R.string.init_import_wallet),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                     )

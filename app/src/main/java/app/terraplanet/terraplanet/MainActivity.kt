@@ -37,7 +37,7 @@ import app.terraplanet.terraplanet.util.bitmapDrawable
 import app.terraplanet.terraplanet.viewmodel.State
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-data class LoginState(val state: State, @StringRes val status: Int, val loading: Boolean)
+data class LoginState(val state: State, @StringRes val statusResId: Int, val loading: Boolean)
 
 class MainActivity : FragmentActivity() {
     var status = mutableStateOf(LoginState(State.LOADING, R.string.server_status, true))
@@ -168,7 +168,7 @@ private fun LoadingScreen(state: LoginState, onBiometrics: () -> Unit) {
                     }
                 }
                 VSpacer(20)
-                Text(stringResource(state.status), color = Color.White, textAlign = TextAlign.Center)
+                Text(stringResource(state.statusResId), color = Color.White, textAlign = TextAlign.Center)
                 VSpacer(50)
             }
         }
