@@ -108,6 +108,23 @@
     <string name="send_authenticate">Autenticar para enviar la transacción</string>
     <!-- endregion -->
 
+    <!-- region Earn screen -->
+    <string name="earn_title">Ganar</string>
+    <string name="earn_amount">Monto:</string>
+    <string name="earn_balance">Balance: %1$s</string>
+    <string name="earn_max">Máx</string>
+    <string name="earn_deposit">Depositar</string>
+    <string name="earn_withdraw">Retirar</string>
+    <string name="earn_deposit_authenticate">Autenticar para depositar</string>
+    <string name="earn_withdraw_authenticate">Autenticar para retirar</string>
+    <string name="earn_deposit_description">Sugerimos que mantengas al menos 1 UST para pagar comisiones. Recuerda
+        que en la Sección de Ganar la comisión se pagará siempre en UST.</string>
+    <string name="earn_withdraw_not_enough_balance">No dispones de UST suficientes para pagar comisiones y Retirar tus
+        ganancias. Por favor, deposita más fondos o selecciona un monto menor.</string>
+    <string name="earn_withdraw_description">Cuando retires tus fondos, va a tomar hasta un minuto para que se
+        refleje en tu balance.</string>
+    <!-- endregion -->
+
     <!-- region Settings tab screen -->
     <string name="settings_title">Ajustes</string>
     <string name="settings_pay_gas">Pagar el gas con:</string>
