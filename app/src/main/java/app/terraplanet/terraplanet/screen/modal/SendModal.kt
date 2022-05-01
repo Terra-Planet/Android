@@ -484,7 +484,7 @@ private fun ShowSendDialog(
                 text = {
                     Text(
                         if (haveBalance)
-                            stringResource(R.string.send_dialog_description_from, wallet?.address ?: "") +
+                            stringResource(R.string.send_dialog_description_from, wallet?.address ?: "") + "\n\n" +
                                     stringResource(R.string.send_dialog_description_to, send.address) + "\n\n" +
                                     stringResource(R.string.send_dialog_description_amount, send.amount) + "\n\n" +
                                     stringResource(R.string.send_dialog_description_fee, send.fee, send.gas.label)
