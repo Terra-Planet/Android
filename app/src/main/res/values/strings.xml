@@ -107,6 +107,23 @@
     <string name="send_authenticate">Authenticate to send transaction</string>
     <!-- endregion -->
 
+    <!-- region Earn screen -->
+    <string name="earn_title">Earn</string>
+    <string name="earn_amount">Amount:</string>
+    <string name="earn_balance">Balance: %1$s</string>
+    <string name="earn_max">Max</string>
+    <string name="earn_deposit">Deposit</string>
+    <string name="earn_withdraw">Withdraw</string>
+    <string name="earn_deposit_authenticate">Authenticate to deposit</string>
+    <string name="earn_withdraw_authenticate">Authenticate to withdraw</string>
+    <string name="earn_deposit_description">We suggest you to keep 1 UST at least to pay gas. Remember that in the
+        Earn Section the gas will be paid always in UST.</string>
+    <string name="earn_withdraw_not_enough_balance">You don\'t have enough UST to pay fees and Withdraw your earnings.
+        Please, deposit more funds or select a lower amount.</string>
+    <string name="earn_withdraw_description">When you withdraw your funds, it will take up to a minute to be
+        reflected in your balance.</string>
+    <!-- endregion -->
+
     <!-- region Settings tab screen -->
     <string name="settings_title">Settings</string>
     <string name="settings_pay_gas">Pay gas with:</string>

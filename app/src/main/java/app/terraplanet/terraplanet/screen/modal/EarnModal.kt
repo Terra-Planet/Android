@@ -2,6 +2,7 @@ package app.terraplanet.terraplanet.screen.modal
 
 import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,12 +21,14 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.terraplanet.terraplanet.R
 import app.terraplanet.terraplanet.model.Coin
 import app.terraplanet.terraplanet.screen.HomeActivity
 import app.terraplanet.terraplanet.ui.theme.MainBlue
@@ -36,9 +39,9 @@ import app.terraplanet.terraplanet.ui.util.*
 import app.terraplanet.terraplanet.util.bitmapDrawable
 import app.terraplanet.terraplanet.util.roundDecimal
 
-enum class EarnTab {
-    Deposit,
-    Withdraw
+enum class EarnTab(@StringRes val resId: Int) {
+    Deposit(R.string.earn_deposit),
+    Withdraw(R.string.earn_withdraw)
 }
 
 @Composable
@@ -52,8 +55,8 @@ fun EarnModal(
     modal: ModalTransitionDialogHelper
 ) {
     val scrollState = rememberScrollState()
-    val earnSegment = remember { listOf(EarnTab.Deposit.name, EarnTab.Withdraw.name) }
-    var selectedSegment by remember { mutableStateOf(if (isDeposit) EarnTab.Deposit.name else EarnTab.Withdraw.name) }
+    val earnSegment = remember { listOf(EarnTab.Deposit, EarnTab.Withdraw) }
+    var selectedSegment by remember { mutableStateOf(if (isDeposit) EarnTab.Deposit else EarnTab.Withdraw) }
     var deposit by remember { mutableStateOf(isDeposit) }
     val ust by remember { mutableStateOf(coin) }
 
@@ -86,30 +89,36 @@ fun EarnModal(
                     )
                 }
             }
-            Text("Earn", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.earn_title), fontSize = 40.sp, fontWeight = FontWeight.Bold)
             VSpacer(30)
             SegmentedControl(
                 segments = earnSegment,
                 selectedSegment = selectedSegment,
                 onSegmentSelected = {
                     selectedSegment = it
-                    deposit = selectedSegment == EarnTab.Deposit.name
+                    deposit = selectedSegment == EarnTab.Deposit
                     amount = 0.0
                 }
             ) {
-                SegmentText(it)
+                SegmentText(stringResource(it.resId))
             }
             VSpacer(30)
             Row {
-                Text("Amount:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.earn_amount), fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Expandable()
                 Text(
-                    "Balance: ${if (deposit) coin.amount.roundDecimal(4) else earn.roundDecimal(4)}",
+                    stringResource(
+                        R.string.earn_balance,
+                        if (deposit)
+                            coin.amount.roundDecimal(4)
+                        else
+                            earn.roundDecimal(4)
+                    ),
                     fontSize = 18.sp
                 )
                 HSpacer(10)
                 Text(
-                    text = "Max.",
+                    stringResource(R.string.earn_max),
                     fontSize = 18.sp,
                     color = MainBlue,
                     modifier = Modifier.clickable {
@@ -158,7 +167,9 @@ fun EarnModal(
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         context.launchBiometric(
                             context,
-                            "Authenticate to ${if (deposit) "deposit" else "withdraw"}",
+                            context.getString(
+                                if (deposit) R.string.earn_deposit_authenticate else R.string.earn_withdraw_authenticate
+                            ),
                             context.authenticationCallback(onSuccess = {
                                 onSubmit(amount, deposit)
                             }), unsupportedCallback = {
@@ -174,7 +185,7 @@ fun EarnModal(
                 enabled = if (deposit) amount >= 1.0 else amount >= 0.5 && coin.amount >= 0.5
             ) {
                 Text(
-                    text = selectedSegment.uppercase(),
+                    stringResource(selectedSegment.resId).uppercase(),
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                 )
@@ -182,7 +193,7 @@ fun EarnModal(
             if (deposit) {
                 VSpacer(10)
                 Text(
-                    "We suggest you to keep 1 UST at least to pay gas. Remember that in the Earn Section the gas will be paid always in UST",
+                    stringResource(R.string.earn_deposit_description),
                     color = Color.Gray,
                     fontSize = 14.sp
                 )
@@ -191,8 +202,7 @@ fun EarnModal(
             if (!deposit && coin.amount < 0.5) {
                 VSpacer(10)
                 Text(
-                    "You don't have enough UST to pay fees and Withdraw your earnings. Please, deposit more funds or" +
-                            " select a lower amount.",
+                    stringResource(R.string.earn_withdraw_not_enough_balance),
                     color = Color.Gray,
                     fontSize = 14.sp
                 )
@@ -201,7 +211,7 @@ fun EarnModal(
             if (!deposit) {
                 VSpacer(10)
                 Text(
-                    "When you withdraw your funds, it will take up to a minute to be reflected in your balance",
+                    stringResource(R.string.earn_withdraw_description),
                     color = Color.Gray,
                     fontSize = 14.sp
                 )
