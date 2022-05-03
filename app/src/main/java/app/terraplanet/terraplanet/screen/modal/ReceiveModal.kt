@@ -19,10 +19,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.terraplanet.terraplanet.R
 import app.terraplanet.terraplanet.ui.theme.*
 import app.terraplanet.terraplanet.ui.util.Container
 import app.terraplanet.terraplanet.ui.util.ModalTransitionDialogHelper
@@ -72,7 +74,7 @@ fun ReceiveQrScreen(modal: ModalTransitionDialogHelper, address: String) {
             }
             VSpacer(20)
             Container(modifier = Modifier.align(Alignment.Start)) {
-                Text("Address:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.receive_address), fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
             VSpacer(8)
             Container(modifier = Modifier.align(Alignment.Start)) {
@@ -80,9 +82,11 @@ fun ReceiveQrScreen(modal: ModalTransitionDialogHelper, address: String) {
             }
             VSpacer(20)
             Button(
-                onClick = { context.copyToClipboard("Wallet Address", address) {
-                    Toast.makeText(context, "Address copied", Toast.LENGTH_SHORT).show()
-                }},
+                onClick = {
+                    context.copyToClipboard(context.getString(R.string.receive_address_clipboard_clip), address) {
+                        Toast.makeText(context, R.string.receive_address_clipboard_message, Toast.LENGTH_SHORT).show()
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(25),
@@ -92,7 +96,7 @@ fun ReceiveQrScreen(modal: ModalTransitionDialogHelper, address: String) {
                 )
             ) {
                 Text(
-                    text = "Copy Address",
+                    stringResource(R.string.receive_address_copy),
                     color = MainBlue,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp

@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import app.terraplanet.terraplanet.R
 import app.terraplanet.terraplanet.ui.theme.TerraPlanetTheme
 import app.terraplanet.terraplanet.ui.util.Center
 import app.terraplanet.terraplanet.ui.util.Expandable
@@ -157,7 +159,7 @@ fun CameraScreen(onResult: (String) -> Unit) {
                             ) {}
                             VSpacer(20)
                             Text(
-                                text = "Scan a Terra address QR Code",
+                                stringResource(R.string.camera_qr_scan),
                                 textAlign = TextAlign.Center,
                                 color = Color.White,
                                 fontSize = 18.sp,

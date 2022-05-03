@@ -15,9 +15,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.terraplanet.terraplanet.R
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.ui.theme.MainColor
 import app.terraplanet.terraplanet.ui.theme.TerraPlanetTheme
@@ -82,7 +84,7 @@ private fun ImportWallet(loading: Boolean, onContinue: (String) -> Unit) {
             ) {
                 VSpacer(30)
                 Text(
-                    "Import Wallet",
+                    stringResource(R.string.import_wallet_import_wallet),
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -91,7 +93,7 @@ private fun ImportWallet(loading: Boolean, onContinue: (String) -> Unit) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        "Seed Phrase:",
+                        stringResource(R.string.import_wallet_seed_phrase),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -118,7 +120,7 @@ private fun ImportWallet(loading: Boolean, onContinue: (String) -> Unit) {
                     )
                 ) {
                     Text(
-                        text = "CONTINUE",
+                        stringResource(R.string.import_wallet_continue),
                         color = MainColor,
                         fontWeight = FontWeight.Bold,
                     )

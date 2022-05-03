@@ -11,15 +11,19 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import app.terraplanet.terraplanet.R
 import app.terraplanet.terraplanet.nav.Screen
 import app.terraplanet.terraplanet.nav.SetupNavGraph
 import app.terraplanet.terraplanet.network.APIServiceImpl
-import app.terraplanet.terraplanet.ui.theme.*
+import app.terraplanet.terraplanet.ui.theme.TerraPlanetTheme
+import app.terraplanet.terraplanet.ui.theme.bgColor
+import app.terraplanet.terraplanet.ui.theme.bottomNavBgColor
 import app.terraplanet.terraplanet.util.Biometrics
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -52,15 +56,15 @@ class HomeActivity : FragmentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
     fun launchBiometric(
         context: Context,
-        description: String = "Authenticate with Biometrics",
+        description: String,
         authenticationCallback: BiometricPrompt.AuthenticationCallback,
         unsupportedCallback: () -> Unit
     ) {
         if (Biometrics.checkBiometricSupport(context)) {
             val biometricPromptInfo = BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Terra Planet")
+                .setTitle(getString(R.string.app_name))
                 .setDescription(description)
-                .setNegativeButtonText("Cancel")
+                .setNegativeButtonText(getString(R.string.biometrics_cancel))
                 .setConfirmationRequired(true)
                 .build()
 
@@ -109,8 +113,8 @@ private fun BottomNavigation(navController: NavController) {
 
         tabs.forEach { tab ->
             BottomNavigationItem(
-                icon = { Icon(painter = painterResource(id = tab.icon), tab.title) },
-                label = { Text(tab.title, fontSize = 12.sp) },
+                icon = { Icon(painter = painterResource(id = tab.icon), stringResource(tab.title)) },
+                label = { Text(text = stringResource(tab.title), fontSize = 12.sp) },
                 selected = currentRoute == tab.route,
                 onClick = {
                     navController.navigate(tab.route) {

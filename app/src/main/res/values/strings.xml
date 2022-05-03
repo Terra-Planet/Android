@@ -1,3 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Terra Planet</string>
+
+    <!-- region Server status -->
+    <string name="server_status">Server status...</string>
+    <string name="server_status_failed">Server failed. Close the app and try again</string>
+    <string name="server_status_starting">Server starting...</string>
+    <string name="server_status_connecting">Server connecting...</string>
+    <string name="server_status_connected">Server connected</string>
+    <string name="server_status_error">Server error</string>
+    <string name="server_status_running">Server running...</string>
+    <!-- endregion -->
+
+    <!-- region Biometrics -->
+    <string name="biometrics_authenticate">Authenticate with Biometrics</string>
+    <string name="biometrics_cancel">Cancel</string>
+    <string name="biometrics_successful">Auth Successful</string>
+    <string name="biometrics_canceled">Auth Canceled</string>
+    <string name="biometrics_error">Error. Try Again</string>
+    <!-- endregion -->
+
+    <!-- region Init screen -->
+    <string name="init_app_description">The open source non-custodial Terra Wallet.</string>
+    <string name="init_create_wallet">CREATE NEW WALLET</string>
+    <string name="init_import_wallet">IMPORT WALLET</string>
+    <!-- endregion -->
+
+    <!-- region Init Wallet screen -->
+    <string name="init_wallet_your_wallet">Your Wallet</string>
+    <string name="init_wallet_address">Address:</string>
+    <string name="init_wallet_seed_phrase">Seed Phrase:</string>
+    <string name="init_wallet_description">Please store your seed phrase securely. We would not be able to recover your wallet if you lose it. We suggest copying it on paper.</string>
+    <string name="init_wallet_continue">CONTINUE</string>
+    <!-- endregion -->
+
+    <!-- region Import Wallet screen -->
+    <string name="import_wallet_import_wallet">Import Wallet</string>
+    <string name="import_wallet_seed_phrase">Seed Phrase:</string>
+    <string name="import_wallet_continue">CONTINUE</string>
+    <!-- endregion -->
+
+    <!-- region Bottom navigation -->
+    <string name="bottom_navigation_wallet">Wallet</string>
+    <string name="bottom_navigation_transactions">Transactions</string>
+    <string name="bottom_navigation_settings">Settings</string>
+    <!-- endregion -->
+
+    <!-- region Wallet tab screen -->
+    <string name="wallet_tab_total_balance">Total Balance</string>
+    <string name="wallet_tab_your_coins">Your Coins</string>
+    <string name="wallet_tab_no_coins">You don\'t own coins yet</string>
+    <string name="wallet_tab_error_getting_coins">Error getting coins, try again</string>
+    <string name="wallet_tab_getting_coins">Getting coins...</string>
+    <string name="wallet_tab_actions">Actions</string>
+    <string name="wallet_tab_swap">Swap</string>
+    <string name="wallet_tab_send">Send</string>
+    <string name="wallet_tab_receive">Receive</string>
+    <string name="wallet_tab_earn_modal_error">Error. Please, try again.</string>
+    <string name="wallet_tab_earn_deposit">Deposit</string>
+    <string name="wallet_tab_earn_withdraw">Withdraw</string>
+    <string name="wallet_tab_earn_apy">Earn (%1$s%% APY)</string>
+    <!-- endregion -->
+
+    <!-- region Receive screen -->
+    <string name="receive_address">Address:</string>
+    <string name="receive_address_copy">Copy Address</string>
+    <string name="receive_address_clipboard_clip">Wallet Address</string>
+    <string name="receive_address_clipboard_message">Address copied</string>
+    <!-- endregion -->
+
+    <!-- region Swap screen -->
+    <string name="swap_title">Swap</string>
+    <string name="swap_action">Swap</string>
+    <string name="swap_dialog_cancel">Cancel</string>
+    <string name="swap_dialog_sign">Sign it!</string>
+    <string name="swap_dialog_title">SWAP</string>
+    <string name="swap_dialog_description_from">From: %1$s</string>
+    <string name="swap_dialog_description_to">To: %1$s</string>
+    <string name="swap_dialog_description_amount">Amount: %1$s</string>
+    <string name="swap_dialog_description_fee">Fee: %1$s %2$s</string>
+    <string name="swap_authenticate">Authenticate to swap</string>
+    <!-- endregion -->
+
+    <!-- region Send screen -->
+    <string name="send_title">Send To</string>
+    <string name="send_address_title">Address:</string>
+    <string name="send_address_paste">Paste</string>
+    <string name="send_address_invalid">Not a valid Terra address</string>
+    <string name="send_coin_title">Coin:</string>
+    <string name="send_coin_select">Select Coin</string>
+    <string name="send_amount_title">Amount:</string>
+    <string name="send_balance">Balance:</string>
+    <string name="send_max">Max</string>
+    <string name="send_action">SEND</string>
+    <string name="send_memo">Memo (optional):</string>
+    <string name="send_dialog_cancel">Cancel</string>
+    <string name="send_dialog_sign">Sign it!</string>
+    <string name="send_dialog_title">SEND</string>
+    <string name="send_dialog_title_attention">ATTENTION</string>
+    <string name="send_dialog_description_from">From: %1$s</string>
+    <string name="send_dialog_description_to">To: %1$s</string>
+    <string name="send_dialog_description_amount">Amount: %1$s</string>
+    <string name="send_dialog_description_fee">Fee: %1$s %2$s</string>
+    <string name="send_dialog_description_not_enough_balance">You don\'t have enough %1$s balance to pay fees and
+        perform this action.</string>
+    <string name="send_authenticate">Authenticate to send transaction</string>
+    <!-- endregion -->
+
+    <!-- region Earn screen -->
+    <string name="earn_title">Earn</string>
+    <string name="earn_amount">Amount:</string>
+    <string name="earn_balance">Balance: %1$s</string>
+    <string name="earn_max">Max</string>
+    <string name="earn_deposit">Deposit</string>
+    <string name="earn_withdraw">Withdraw</string>
+    <string name="earn_deposit_authenticate">Authenticate to deposit</string>
+    <string name="earn_withdraw_authenticate">Authenticate to withdraw</string>
+    <string name="earn_deposit_description">We suggest you to keep 1 UST at least to pay gas. Remember that in the
+        Earn Section the gas will be paid always in UST.</string>
+    <string name="earn_withdraw_not_enough_balance">You don\'t have enough UST to pay fees and Withdraw your earnings.
+        Please, deposit more funds or select a lower amount.</string>
+    <string name="earn_withdraw_description">When you withdraw your funds, it will take up to a minute to be
+        reflected in your balance.</string>
+    <!-- endregion -->
+
+    <!-- region Settings tab screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_pay_gas">Pay gas with:</string>
+    <string name="settings_network">Network:</string>
+    <string name="settings_show_seed_phrase">Show my Seed Phrase</string>
+    <string name="settings_logout">Log Out</string>
+    <string name="settings_authenticate">Authenticate to show Seed Phrase</string>
+    <string name="settings_show_seed_phrase_ok">OK</string>
+    <string name="settings_show_seed_phrase_title">Your seed phrase is:</string>
+    <string name="settings_logout_confirm">Confirm</string>
+    <string name="settings_logout_cancel">Cancel</string>
+    <string name="settings_logout_title">ATTENTION</string>
+    <string name="settings_logout_description">Make sure your Seed Phrase is saved. If you don\'t have your Seed
+        Phrase you will lose access to your Wallet forever.</string>
+    <!-- endregion -->
+
+    <!-- region Camera screen -->
+    <string name="camera_qr_scan">Scan a Terra address QR Code</string>
+    <!-- endregion -->
 </resources>

@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -95,10 +96,10 @@ fun SendModal(
                         if (valid) {
                             address = data
                         } else {
-                            Toast.makeText(context, "Not a valid Terra address", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, R.string.send_address_invalid, Toast.LENGTH_SHORT).show()
                         }
                     }, {
-                        Toast.makeText(context, "Not a valid Terra address", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.send_address_invalid, Toast.LENGTH_SHORT).show()
                     })
                 }
             }
@@ -117,7 +118,11 @@ fun SendModal(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
-                        Text("Select Coin", fontWeight = FontWeight.Bold, modifier = Modifier.padding(16.dp))
+                        Text(
+                            stringResource(R.string.send_coin_select),
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(16.dp)
+                        )
                         LazyColumn {
                             items(wallet.value.coins.size) {
                                 ListItem(
@@ -162,10 +167,14 @@ fun SendModal(
                             )
                         }
                     }
-                    Text("Send To", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.send_title), fontSize = 40.sp, fontWeight = FontWeight.Bold)
                     VSpacer(30)
                     Container(modifier = Modifier.align(Alignment.Start)) {
-                        Text("Address:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            stringResource(R.string.send_address_title),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                     VSpacer(10)
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -188,11 +197,11 @@ fun SendModal(
                                         if (valid) {
                                             address = data
                                         } else {
-                                            Toast.makeText(context, "Not a valid Terra address", Toast.LENGTH_SHORT)
+                                            Toast.makeText(context, R.string.send_address_invalid, Toast.LENGTH_SHORT)
                                                 .show()
                                         }
                                     }, {
-                                        Toast.makeText(context, "Not a valid Terra address", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, R.string.send_address_invalid, Toast.LENGTH_SHORT).show()
                                     })
                                 }
                             },
@@ -201,7 +210,7 @@ fun SendModal(
                             elevation = ButtonDefaults.elevation(defaultElevation = 0.dp, pressedElevation = 0.dp)
                         ) {
                             Text(
-                                text = "Paste",
+                                stringResource(R.string.send_address_paste),
                                 color = MainBlue,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
@@ -219,7 +228,7 @@ fun SendModal(
                     }
                     VSpacer(30)
                     Container(modifier = Modifier.align(Alignment.Start)) {
-                        Text("Coin:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.send_coin_title), fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     }
                     VSpacer(10)
                     Surface(
@@ -237,15 +246,18 @@ fun SendModal(
                     }
                     VSpacer(40)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Amount:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.send_amount_title), fontSize = 18.sp, fontWeight = FontWeight.Bold)
                         Expandable()
-                        Text("Balance:")
+                        Text(stringResource(R.string.send_balance))
                         HSpacer(4)
                         Text(totalBalance.roundDecimal(if (coin.denom == Denom.UST) 2 else 4))
                         HSpacer(15)
-                        Text("Max", fontSize = 18.sp, color = MainBlue, modifier = Modifier.clickable {
-                            amount = ValidInput("$totalBalance", true)
-                        })
+                        Text(
+                            stringResource(R.string.send_max),
+                            fontSize = 18.sp,
+                            color = MainBlue,
+                            modifier = Modifier.clickable { amount = ValidInput("$totalBalance", true) }
+                        )
                     }
                     VSpacer(10)
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -296,12 +308,15 @@ fun SendModal(
                                     memo
                                 )
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                    context.launchBiometric(context, "Authenticate to send transaction",
+                                    context.launchBiometric(
+                                        context,
+                                        context.getString(R.string.send_authenticate),
                                         context.authenticationCallback(onSuccess = {
                                             onSubmit(send!!)
                                         }), unsupportedCallback = {
                                             onSubmit(send!!)
-                                        })
+                                        }
+                                    )
                                 } else {
                                     onSubmit(send!!)
                                 }
@@ -313,7 +328,7 @@ fun SendModal(
                                     address.isNotEmpty()
                         ) {
                             Text(
-                                text = "SEND",
+                                stringResource(R.string.send_action),
                                 color = Color.White,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
@@ -323,7 +338,7 @@ fun SendModal(
                     }
                     VSpacer(20)
                     Container(modifier = Modifier.align(Alignment.Start)) {
-                        Text("Memo (optional):")
+                        Text(stringResource(R.string.send_memo))
                     }
                     VSpacer(10)
                     Surface(
@@ -345,7 +360,7 @@ fun SendModal(
             LoadingOverlay(Color.White)
         }
 
-        ShowSwapDialog(send, showDialog, onConfirm, onDismiss)
+        ShowSendDialog(send, showDialog, onConfirm, onDismiss)
     }
 }
 
@@ -416,7 +431,7 @@ private fun CoinSelector(coin: Coin) {
 }
 
 @Composable
-private fun ShowSwapDialog(
+private fun ShowSendDialog(
     sendData: Send?,
     show: Boolean,
     onConfirm: () -> Unit,
@@ -455,7 +470,12 @@ private fun ShowSwapDialog(
                         ) else null,
                 title = {
                     Text(
-                        if (haveBalance) "SEND" else "ATTENTION",
+                        stringResource(
+                            if (haveBalance)
+                                R.string.send_dialog_title
+                            else
+                                R.string.send_dialog_title_attention
+                        ),
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -463,11 +483,13 @@ private fun ShowSwapDialog(
                 },
                 text = {
                     Text(
-                        text = if (haveBalance) "From: ${wallet?.address}\n\n" +
-                                "To: ${send.address}\n\n" +
-                                "Amount: ${send.amount}\n\n" +
-                                "Fee: ${send.fee} ${send.gas.label}"
-                        else "You don't have enough ${send.gas.label} balance to pay fees and perform this action.",
+                        if (haveBalance)
+                            stringResource(R.string.send_dialog_description_from, wallet?.address ?: "") + "\n\n" +
+                                    stringResource(R.string.send_dialog_description_to, send.address) + "\n\n" +
+                                    stringResource(R.string.send_dialog_description_amount, send.amount) + "\n\n" +
+                                    stringResource(R.string.send_dialog_description_fee, send.fee, send.gas.label)
+                        else
+                            stringResource(R.string.send_dialog_description_not_enough_balance, send.gas.label),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 18.sp
@@ -481,11 +503,11 @@ private fun ShowSwapDialog(
 @Composable
 private fun ConfirmButton(onConfirm: () -> Unit) {
     TextButton(onClick = onConfirm)
-    { Text(text = "Sign it!", fontSize = 18.sp) }
+    { Text(stringResource(R.string.send_dialog_sign), fontSize = 18.sp) }
 }
 
 @Composable
 private fun DismissButton(onDismiss: () -> Unit) {
     TextButton(onClick = onDismiss)
-    { Text(text = "Cancel", fontSize = 18.sp) }
+    { Text(stringResource(R.string.send_dialog_cancel), fontSize = 18.sp) }
 }

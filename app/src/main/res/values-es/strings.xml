@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Terra Planet</string>
+
+    <!-- region Server status -->
+    <string name="server_status">Estado del servidor...</string>
+    <string name="server_status_failed">El servidor falló. Cierra la app e intent nuevamente</string>
+    <string name="server_status_starting">Iniciando el servidor...</string>
+    <string name="server_status_connecting">Conectando con el servidor...</string>
+    <string name="server_status_connected">Conectado con el servidor</string>
+    <string name="server_status_error">Error del servidor</string>
+    <string name="server_status_running">Ejecutando el servidor...</string>
+    <!-- endregion -->
+
+    <!-- region Biometrics -->
+    <string name="biometrics_authenticate">Autenticar con datos biométricos</string>
+    <string name="biometrics_cancel">Cancelar</string>
+    <string name="biometrics_successful">Autenticación exitosa</string>
+    <string name="biometrics_canceled">Autenticación cancelada</string>
+    <string name="biometrics_error">Error. Intente nuevamente</string>
+    <!-- endregion -->
+
+    <!-- region Init screen -->
+    <string name="init_app_description">La Billetera de Terra no-custodiada y de código abierto.</string>
+    <string name="init_create_wallet">CREAR NUEVA BILLETERA</string>
+    <string name="init_import_wallet">IMPORTAR BILLETERA</string>
+    <!-- endregion -->
+
+    <!-- region Init Wallet screen -->
+    <string name="init_wallet_your_wallet">Tu Billetera</string>
+    <string name="init_wallet_address">Dirección:</string>
+    <string name="init_wallet_seed_phrase">Frase semilla:</string>
+    <string name="init_wallet_description">Por favor, guarda tu frase semilla de forma segura. No podremos recuperar
+        tu billetera si la pierdes. Sugerimos que la escribas en papel.</string>
+    <string name="init_wallet_continue">CONTINUAR</string>
+    <!-- endregion -->
+
+    <!-- region Import Wallet screen -->
+    <string name="import_wallet_import_wallet">Importar Billetera</string>
+    <string name="import_wallet_seed_phrase">Frase semilla:</string>
+    <string name="import_wallet_continue">CONTINUAR</string>
+    <!-- endregion -->
+
+    <!-- region Bottom navigation -->
+    <string name="bottom_navigation_wallet">Billetera</string>
+    <string name="bottom_navigation_transactions">Transacciones</string>
+    <string name="bottom_navigation_settings">Ajustes</string>
+    <!-- endregion -->
+
+    <!-- region Wallet tab screen -->
+    <string name="wallet_tab_total_balance">Balance Total</string>
+    <string name="wallet_tab_your_coins">Tus Monedas</string>
+    <string name="wallet_tab_no_coins">No tienes monedas todavía</string>
+    <string name="wallet_tab_error_getting_coins">Error obteniendo monedas, intente nuevamente</string>
+    <string name="wallet_tab_getting_coins">Obteniendo monedas...</string>
+    <string name="wallet_tab_actions">Acciones</string>
+    <string name="wallet_tab_swap">Cambiar</string>
+    <string name="wallet_tab_send">Enviar</string>
+    <string name="wallet_tab_receive">Recibir</string>
+    <string name="wallet_tab_earn_modal_error">Error. Por favor, intente nuevamente.</string>
+    <string name="wallet_tab_earn_deposit">Depositar</string>
+    <string name="wallet_tab_earn_withdraw">Retirar</string>
+    <string name="wallet_tab_earn_apy">Ganar (%1$s%% APY)</string>
+    <!-- endregion -->
+
+    <!-- region Receive screen -->
+    <string name="receive_address">Dirección:</string>
+    <string name="receive_address_copy">Copiar Dirección</string>
+    <string name="receive_address_clipboard_clip">Dirección de la Billetera</string>
+    <string name="receive_address_clipboard_message">Dirección copiada</string>
+    <!-- endregion -->
+
+    <!-- region Swap screen -->
+    <string name="swap_title">Cambiar</string>
+    <string name="swap_action">Cambiar</string>
+    <string name="swap_dialog_cancel">Cancelar</string>
+    <string name="swap_dialog_sign">¡Firmar!</string>
+    <string name="swap_dialog_title">CAMBIAR</string>
+    <string name="swap_dialog_description_from">De: %1$s</string>
+    <string name="swap_dialog_description_to">Para: %1$s</string>
+    <string name="swap_dialog_description_amount">Monto: %1$s</string>
+    <string name="swap_dialog_description_fee">Comisión: %1$s %2$s</string>
+    <string name="swap_authenticate">Autenticar para cambiar</string>
+    <!-- endregion -->
+
+    <!-- region Send screen -->
+    <string name="send_title">Enviar a</string>
+    <string name="send_address_title">Dirección:</string>
+    <string name="send_address_paste">Pegar</string>
+    <string name="send_address_invalid">Dirección Terra inválida</string>
+    <string name="send_coin_title">Moneda:</string>
+    <string name="send_coin_select">Seleccione Moneda</string>
+    <string name="send_amount_title">Monto:</string>
+    <string name="send_balance">Balance:</string>
+    <string name="send_max">Máx</string>
+    <string name="send_action">ENVIAR</string>
+    <string name="send_memo">Memo (opcional):</string>
+    <string name="send_dialog_cancel">Cancelar</string>
+    <string name="send_dialog_sign">¡Firmar!</string>
+    <string name="send_dialog_title">ENVIAR</string>
+    <string name="send_dialog_title_attention">ATENCIÓN</string>
+    <string name="send_dialog_description_from">De: %1$s</string>
+    <string name="send_dialog_description_to">Para: %1$s</string>
+    <string name="send_dialog_description_amount">Monto: %1$s</string>
+    <string name="send_dialog_description_fee">Comisión: %1$s %2$s</string>
+    <string name="send_dialog_description_not_enough_balance">No tienes suficiente %1$s en tu balance para pagar
+        comisiones y realizar esta acción.</string>
+    <string name="send_authenticate">Autenticar para enviar la transacción</string>
+    <!-- endregion -->
+
+    <!-- region Earn screen -->
+    <string name="earn_title">Ganar</string>
+    <string name="earn_amount">Monto:</string>
+    <string name="earn_balance">Balance: %1$s</string>
+    <string name="earn_max">Máx</string>
+    <string name="earn_deposit">Depositar</string>
+    <string name="earn_withdraw">Retirar</string>
+    <string name="earn_deposit_authenticate">Autenticar para depositar</string>
+    <string name="earn_withdraw_authenticate">Autenticar para retirar</string>
+    <string name="earn_deposit_description">Sugerimos que mantengas al menos 1 UST para pagar comisiones. Recuerda
+        que en la Sección de Ganar la comisión se pagará siempre en UST.</string>
+    <string name="earn_withdraw_not_enough_balance">No dispones de UST suficientes para pagar comisiones y Retirar tus
+        ganancias. Por favor, deposita más fondos o selecciona un monto menor.</string>
+    <string name="earn_withdraw_description">Cuando retires tus fondos, va a tomar hasta un minuto para que se
+        refleje en tu balance.</string>
+    <!-- endregion -->
+
+    <!-- region Settings tab screen -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_pay_gas">Pagar el gas con:</string>
+    <string name="settings_network">Red:</string>
+    <string name="settings_show_seed_phrase">Mostrar mi Frase Semilla</string>
+    <string name="settings_logout">Cerrar sesión</string>
+    <string name="settings_authenticate">Autenticar para mostrar la Frase Semilla</string>
+    <string name="settings_show_seed_phrase_ok">OK</string>
+    <string name="settings_show_seed_phrase_title">Tu frase semilla es:</string>
+    <string name="settings_logout_confirm">Confirmar</string>
+    <string name="settings_logout_cancel">Cancelar</string>
+    <string name="settings_logout_title">ATENCIÓN</string>
+    <string name="settings_logout_description">Asegúrate de tener guardada la Frase Semilla. Si no tienes tu Frase
+        semilla perderás acceso a tu Billetera para siempre.</string>
+    <!-- endregion -->
+
+    <!-- region Camera screen -->
+    <string name="camera_qr_scan">Escanea un Código QR de una dirección Terra</string>
+    <!-- endregion -->
+</resources>

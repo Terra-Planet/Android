@@ -13,10 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.terraplanet.terraplanet.R
 import app.terraplanet.terraplanet.model.Wallet
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.network.APIServiceImpl.Companion.LOG_E
@@ -86,7 +88,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                 ) {
                     VSpacer(30)
                     Text(
-                        "Your Wallet",
+                        stringResource(R.string.init_wallet_your_wallet),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                     )
@@ -95,7 +97,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            "Address:",
+                            stringResource(R.string.init_wallet_address),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -120,7 +122,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            "Seed Phrase:",
+                            stringResource(R.string.init_wallet_seed_phrase),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -139,9 +141,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                         )
                     }
                     VSpacer(10)
-                    Text(
-                        "Please store your seed phrase securely. We would not be able to recover your wallet if you lose it. We suggest copying it on paper.",
-                    )
+                    Text(stringResource(R.string.init_wallet_description))
                     Expandable()
                     Button(
                         onClick = { onContinue() },
@@ -154,7 +154,7 @@ private fun YourWallet(loading: Boolean, wallet: Wallet?, onContinue: () -> Unit
                         )
                     ) {
                         Text(
-                            text = "CONTINUE",
+                            stringResource(R.string.init_wallet_continue),
                             color = MainColor,
                             fontWeight = FontWeight.Bold,
                         )
