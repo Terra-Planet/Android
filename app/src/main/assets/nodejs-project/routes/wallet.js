@@ -99,23 +99,23 @@ router.post('/swap/preview', async (req, res) =>{
 
     const terra = utils.get_lcd_client(req.body.network);
     const wallet = utils.get_wallet(req.body.mnemonic, req.body.network);
-
+    
     const swap = new MsgSwap(
         wallet.key.accAddress,
         new Coin(req.body.src, req.body.amount * 10 ** 6 ),
         req.body.dst
     );
-
+    
     utils.get_gas_prices(req.body.fee_token).then ( (gas_prices) => {
-        wallet.createTx({ msgs: [swap], gasPrices: gas_prices}).then ( (tx) => {
-            res.send(tx);
+        wallet.createTx({ msgs: [swap], gasPrices: gas_prices}).then ( (tx) => {    
+            res.send(tx);        
         }).catch( (err)=> {
             res.status(400).send({status:'create_and_sign_err',msg:err.message});
-        });
+        });    
     }).catch( (err)=> {
         res.status(400).send({status:'get_gas_prices',msg:err.message});
-    });
-
+    });    
+    
 });
 
 

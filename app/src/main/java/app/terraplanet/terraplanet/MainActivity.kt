@@ -74,11 +74,6 @@ class MainActivity : FragmentActivity() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        getWallet()
-    }
-
     private fun getWallet(): Boolean = api.getWallet(applicationContext) != null
 
     private fun goToInitScreen() {
