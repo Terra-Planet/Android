@@ -1,0 +1,3 @@
+[submodule "app/src/main/assets/nodejs-project"]
+	path = app/src/main/assets/nodejs-project
+	url = https://github.com/Terra-Planet/backend
