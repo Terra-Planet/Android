@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 
 class SettingsViewModel(val app: Application): AndroidViewModel(app) {
     private val _settingsState = MutableStateFlow(
-        SettingsState(state = State.LOADING, Net.TEST, Denom.UST)
+        SettingsState(resultState = ResultState.LOADING, Net.TEST, Denom.UST)
     )
 
     val settingsState: StateFlow<SettingsState> get() = _settingsState
@@ -30,11 +30,11 @@ class SettingsViewModel(val app: Application): AndroidViewModel(app) {
     init { fetchSettings() }
 
     private fun fetchSettings() {
-        _settingsState.update { SettingsState(state = State.LOADING, Net.TEST, Denom.UST).copy() }
+        _settingsState.update { SettingsState(resultState = ResultState.LOADING, Net.TEST, Denom.UST).copy() }
         val network = api.getNetwork(app.applicationContext)
         val payGas = api.getPayGas(app.applicationContext)
         _settingsState.update {
-            SettingsState(State.SUCCESS, network, payGas).copy()
+            SettingsState(ResultState.SUCCESS, network, payGas).copy()
         }
     }
 
@@ -42,7 +42,7 @@ class SettingsViewModel(val app: Application): AndroidViewModel(app) {
         val network = api.putNetwork(app.applicationContext, net)
         val payGas = api.getPayGas(app.applicationContext)
         _settingsState.update {
-            SettingsState(State.SUCCESS, network, payGas).copy()
+            SettingsState(ResultState.SUCCESS, network, payGas).copy()
         }
     }
 
@@ -50,7 +50,7 @@ class SettingsViewModel(val app: Application): AndroidViewModel(app) {
         val payGas = api.putPayGas(app.applicationContext, gas)
         val network = api.getNetwork(app.applicationContext)
         _settingsState.update {
-            SettingsState(State.SUCCESS, network, payGas).copy()
+            SettingsState(ResultState.SUCCESS, network, payGas).copy()
         }
     }
 
@@ -80,4 +80,4 @@ class SettingsViewModel(val app: Application): AndroidViewModel(app) {
     }
 }
 
-data class SettingsState(val state: State, val network: Net, val gas: Denom)
+data class SettingsState(val resultState: ResultState, val network: Net, val gas: Denom)

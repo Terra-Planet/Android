@@ -56,8 +56,8 @@ fun SwapModal(
     coins: List<Coin>,
     lunaPrice: Double,
     isLoading: Boolean,
-    showDialog: Boolean,
-    onSubmit: (Swap) -> Unit,
+    dialog: Triple<Boolean, String, Boolean>,
+    onSubmit: (Swap, Denom) -> Unit,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
     modal: ModalTransitionDialogHelper
@@ -71,7 +71,7 @@ fun SwapModal(
     )
     var swapCoins by remember { mutableStateOf(listOf(denoms.first(), denoms.last())) }
 
-    val lunaQuantity = coins.find { it.denom == Denom.LUNA }?.quantity ?: 0.0
+    val lunaQuantity = coins.find { it.isLuna }?.quantity ?: 0.0
     val uusdQuantity = coins.find { it.denom == Denom.UST }?.quantity ?: 0.0
 
     var luna by remember { mutableStateOf(ValidInput("0", true)) }
@@ -215,7 +215,7 @@ fun SwapModal(
                     val swapData = Swap(
                         swapCoins.first(),
                         swapCoins.last(),
-                        if (swapCoins.first().denom == Denom.UST) uusd.input.parseToDouble() else luna.input.parseToDouble(),
+                        if (swapCoins.first().isLuna) luna.input.parseToDouble() else uusd.input.parseToDouble(),
                         0.0,
                         api.getPayGas(context)
                     )
@@ -225,12 +225,12 @@ fun SwapModal(
                             context,
                             "Authenticate to swap",
                             context.authenticationCallback(onSuccess = {
-                                onSubmit(swapData)
+                                onSubmit(swapData, swapCoins.first().denom)
                             }), unsupportedCallback = {
-                                onSubmit(swapData)
+                                onSubmit(swapData, swapCoins.first().denom)
                             })
                     } else {
-                        onSubmit(swapData)
+                        onSubmit(swapData, swapCoins.first().denom)
                     }
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = MainColor),
@@ -251,7 +251,7 @@ fun SwapModal(
             LoadingOverlay(Color.White)
         }
 
-        ShowSwapDialog(swap, showDialog, lunaRate, onConfirm, onDismiss)
+        ShowSwapDialog(swap, dialog, onConfirm, onDismiss)
     }
 }
 
@@ -330,23 +330,29 @@ private fun BasicInput(
 @Composable
 private fun ShowSwapDialog(
     swap: Swap?,
-    show: Boolean,
-    lunaPrice: Double,
+    dialog: Triple<Boolean, String, Boolean>,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    if (show) {
+    if (dialog.first) {
         swap?.let {
             AlertDialog(
                 onDismissRequest = onConfirm,
                 properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
                 confirmButton = {
-                    TextButton(onClick = onConfirm)
-                    { Text(text = "Sign it!", fontSize = 18.sp) }
+                    if (dialog.third) {
+                        TextButton(onClick = onConfirm)
+                        { Text(text = "Sign it!", fontSize = 18.sp) }
+                    } else {
+                        TextButton(onClick = onDismiss)
+                        { Text(text = "Ok", fontSize = 18.sp) }
+                    }
                 },
                 dismissButton = {
-                    TextButton(onClick = onDismiss)
-                    { Text(text = "Cancel", fontSize = 18.sp) }
+                    if (dialog.third) {
+                        TextButton(onClick = onDismiss)
+                        { Text(text = "Cancel", fontSize = 18.sp) }
+                    }
                 },
                 title = {
                     Text(
@@ -358,10 +364,7 @@ private fun ShowSwapDialog(
                 },
                 text = {
                     Text(
-                        text =  "From: ${it.from.denom.label}\n" +
-                                "To: ${it.to.denom.label}\n\n" +
-                                "Amount: ${if (it.from.denom == Denom.LUNA) it.amount * lunaPrice else it.amount / lunaPrice}\n\n" +
-                                "Fee: ${swap.fee} ${swap.pay.label}",
+                        text = dialog.second,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 18.sp

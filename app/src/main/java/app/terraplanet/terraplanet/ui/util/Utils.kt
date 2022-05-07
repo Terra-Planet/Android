@@ -62,8 +62,8 @@ fun ColumnScope.Expandable() {
 }
 
 @Composable
-fun RowScope.Expandable() {
-    Box(modifier = Modifier.weight(1f))
+fun RowScope.Expandable(content: (@Composable () -> Unit)? = null) {
+    Box(modifier = Modifier.weight(1f)) { content?.invoke() }
 }
 
 @Composable

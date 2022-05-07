@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.*
 
 class WalletViewModel(val app: Application): AndroidViewModel(app) {
     private val _walletState = MutableStateFlow(
-        WalletState(State.LOADING, "0.00", 0.0, 0.0, Denom.UST, 0.0, listOf())
+        WalletState(ResultState.LOADING, "0.00", 0.0, 0.0, Denom.UST, 0.0, listOf())
     )
     private var network = MutableStateFlow(api.getNetwork(app.applicationContext))
 
@@ -48,7 +48,7 @@ class WalletViewModel(val app: Application): AndroidViewModel(app) {
         var gas = Denom.UST
 
         _walletState.update {
-            WalletState(State.LOADING, amount, earn, rate, gas, lunaPrice, coins).copy()
+            WalletState(ResultState.LOADING, amount, earn, rate, gas, lunaPrice, coins).copy()
         }
 
         Single.zip(
@@ -66,9 +66,9 @@ class WalletViewModel(val app: Application): AndroidViewModel(app) {
             gas = api.getPayGas(app.applicationContext)
         }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                _walletState.update { WalletState(State.SUCCESS, amount, earn, rate, gas, lunaPrice, coins).copy() }
+                _walletState.update { WalletState(ResultState.SUCCESS, amount, earn, rate, gas, lunaPrice, coins).copy() }
             }, {
-                _walletState.update { WalletState(State.FAILED, amount, earn, rate, gas, lunaPrice, coins).copy() }
+                _walletState.update { WalletState(ResultState.FAILED, amount, earn, rate, gas, lunaPrice, coins).copy() }
             })
     }
 
@@ -153,7 +153,7 @@ class WalletViewModel(val app: Application): AndroidViewModel(app) {
 }
 
 data class WalletState(
-    val state: State,
+    val resultState: ResultState,
     val amount: String,
     val earn: Double,
     val rate: Double,

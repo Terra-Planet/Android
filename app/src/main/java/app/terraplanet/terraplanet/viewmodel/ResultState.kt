@@ -1,6 +1,6 @@
 package app.terraplanet.terraplanet.viewmodel
 
-enum class State {
+enum class ResultState {
     SUCCESS,
     FAILED,
     LOADING,

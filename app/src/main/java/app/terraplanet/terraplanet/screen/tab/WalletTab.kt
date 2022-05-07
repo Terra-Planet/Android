@@ -38,9 +38,7 @@ import app.terraplanet.terraplanet.ui.theme.Orange
 import app.terraplanet.terraplanet.ui.util.*
 import app.terraplanet.terraplanet.util.bitmapDrawable
 import app.terraplanet.terraplanet.util.roundDecimal
-import app.terraplanet.terraplanet.viewmodel.SettingsViewModel
-import app.terraplanet.terraplanet.viewmodel.State
-import app.terraplanet.terraplanet.viewmodel.WalletViewModel
+import app.terraplanet.terraplanet.viewmodel.*
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -62,7 +60,7 @@ fun WalletTab(activity: ComponentActivity,
     var isEarnDeposit: Boolean? by remember { mutableStateOf(null) }
 
     var isSwapLoading by remember { mutableStateOf(false) }
-    var showSwapDialog by remember { mutableStateOf(false) }
+    var swapDialog by remember { mutableStateOf(Triple(false, "", false)) }
 
     var isSendLoading by remember { mutableStateOf(false) }
     var showSendDialog by remember { mutableStateOf(false) }
@@ -118,8 +116,8 @@ fun WalletTab(activity: ComponentActivity,
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 10.dp)
             ) {
-                when(wallet.value.state) {
-                    State.SUCCESS -> {
+                when(wallet.value.resultState) {
+                    ResultState.SUCCESS -> {
                         if (wallet.value.coins.isEmpty()) {
                             Text(text = "You don't own coins yet",
                                 color = Color.LightGray,
@@ -129,22 +127,22 @@ fun WalletTab(activity: ComponentActivity,
                         } else {
                             wallet.value.coins.forEach {
                                 VSpacer(4)
-                                CoinItem(it)
+                                CoinItem(it, wallet)
                                 VSpacer(4)
                             }
                         }
                     }
-                    State.FAILED -> Text(text = "Error getting coins, try again",
+                    ResultState.FAILED -> Text(text = "Error getting coins, try again",
                         color = Color.LightGray,
                         fontStyle = FontStyle.Italic,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
                     )
-                    State.LOADING -> Text(text = "Getting coins...",
+                    ResultState.LOADING -> Text(text = "Getting coins...",
                         color = Color.LightGray,
                         fontStyle = FontStyle.Italic,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
                     )
-                    State.CANCELLED -> {}
+                    ResultState.CANCELLED -> {}
                 }
             }
         }
@@ -173,19 +171,20 @@ fun WalletTab(activity: ComponentActivity,
                 onDismissRequest = { showSwapModal = false },
                 showSwapModal = showSwapModal,
                 isLoading = isSwapLoading,
-                showDialog = showSwapDialog,
-                onSubmit = {
+                dialog = swapDialog,
+                onSubmit = { swap, denom ->
                     isSwapLoading = true
-                    model.swapPreview(it, onDone = { swap ->
-                        swapData = swap
+                    model.swapPreview(swap, onDone = {
+                        val hasEnough = hasEnoughFunds(wallet, setting, it, denom)
+                        swapData = it
                         isSwapLoading = false
-                        showSwapDialog = true
+                        swapDialog = Triple(true, swapDialogText(it, hasEnough, wallet, setting), hasEnough)
                     }, onError = {
                         isSwapLoading = false
                     })
                 },
                 onConfirm = {
-                    showSwapDialog = false
+                    swapDialog = Triple(false, "", false)
                     isSwapLoading = true
                     model.swap(swapData!!, onDone = { swap ->
                         swapData = swap
@@ -197,7 +196,7 @@ fun WalletTab(activity: ComponentActivity,
                     })
                 },
                 onDismiss = {
-                    showSwapDialog = false
+                    swapDialog = Triple(false, "", false)
                     isSwapLoading = false
                 }
             ) { WalletAction(
@@ -326,8 +325,31 @@ fun WalletTab(activity: ComponentActivity,
         VSpacer(60)
     }
 
-    if (wallet.value.state == State.LOADING) {
+    if (wallet.value.resultState == ResultState.LOADING) {
         LoadingOverlay(Color.White)
+    }
+}
+
+private fun swapDialogText(swap: Swap, hasEnough: Boolean, wallet: State<WalletState>, setting: State<SettingsState>): String {
+    return if (hasEnough) "From: ${swap.from.denom.label}\n" +
+            "To: ${swap.to.denom.label}\n\n" +
+            "Amount: ${if (swap.from.isLuna) swap.amount * wallet.value.lunaPrice else swap.amount / wallet.value.lunaPrice}\n\n" +
+            "Fee: ${swap.fee} ${swap.pay.label}"
+    else "You don't have enough ${setting.value.gas.label} to pay fees."
+}
+
+private fun hasEnoughFunds(wallet: State<WalletState>, settings: State<SettingsState>, swap: Swap, denom: Denom): Boolean {
+    val coin = wallet.value.coins.first { it.denom == denom }
+    val amount = if (swap.from.isLuna) swap.amount * wallet.value.lunaPrice else swap.amount
+    return if (denom == settings.value.gas) {
+        coin.amount - amount >= swap.fee
+    } else {
+        val other = wallet.value.coins.firstOrNull { it.denom != denom }
+        if (other != null) {
+            other.amount >= swap.fee
+        } else {
+            false
+        }
     }
 }
 
@@ -354,9 +376,9 @@ private fun SwapButtonSection(
     coins: List<Coin>,
     lunaPrice: Double,
     isLoading: Boolean,
-    showDialog: Boolean,
+    dialog: Triple<Boolean, String, Boolean>,
     showSwapModal: Boolean,
-    onSubmit: (Swap) -> Unit,
+    onSubmit: (Swap, Denom) -> Unit,
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
@@ -366,7 +388,7 @@ private fun SwapButtonSection(
     content()
 
     if (showSwapModal) {
-        ShowSwapDialog(context, swap, coins, lunaPrice, isLoading, showDialog, onSubmit, onConfirm, onDismiss, onDismissRequest)
+        ShowSwapDialog(context, swap, coins, lunaPrice, isLoading, dialog, onSubmit, onConfirm, onDismiss, onDismissRequest)
     }
 }
 
@@ -412,7 +434,7 @@ private fun EarnModalSection(
 }
 
 @Composable
-fun CoinItem(coin: Coin) {
+fun CoinItem(coin: Coin, wallet: State<WalletState>) {
     val context = LocalContext.current
 
     Row(
@@ -427,20 +449,25 @@ fun CoinItem(coin: Coin) {
                 .height(35.dp)
         )
         HSpacer(10)
-        Box(
-            modifier = Modifier.width(55.dp)
-        ) {
-            Text("${coin.denom.label}:", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Box {
+            Text(
+                if (coin.isLuna) "${coin.denom.label} ($${wallet.value.lunaPrice}):"
+                else "${coin.denom.label}:",
+                color = Color.White,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
         HSpacer(6)
-        Text(
-            coin.quantity.roundDecimal(if (coin.denom == Denom.LUNA) 4 else 2),
-            color = Color.White,
-            fontSize = 18.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Expandable()
+        Expandable {
+            Text(
+                coin.quantity.roundDecimal(if (coin.isLuna) 4 else 2),
+                color = Color.White,
+                fontSize = 17.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
         Text(
             "$${coin.amount.roundDecimal(2)}",
             color = Color.White,
@@ -558,14 +585,14 @@ private fun ShowSwapDialog(
     coins: List<Coin>,
     lunaPrice: Double,
     isLoading: Boolean,
-    showDialog: Boolean,
-    onSubmit: (Swap) -> Unit,
+    dialog: Triple<Boolean, String, Boolean>,
+    onSubmit: (Swap, Denom) -> Unit,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     ModalTransitionDialog(onDismissRequest = onDismissRequest) {
-        SwapModal(context, swap, coins, lunaPrice, isLoading, showDialog, onSubmit, onConfirm, onDismiss, it)
+        SwapModal(context, swap, coins, lunaPrice, isLoading, dialog, onSubmit, onConfirm, onDismiss, it)
     }
 }
 

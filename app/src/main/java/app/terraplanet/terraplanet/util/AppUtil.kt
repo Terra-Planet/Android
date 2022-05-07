@@ -1,22 +1,30 @@
 package app.terraplanet.terraplanet.util
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.content.res.AssetManager
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import app.terraplanet.terraplanet.MainActivity
+import app.terraplanet.terraplanet.ui.util.resetStack
 import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
 
+
 class AppUtil {
 
     companion object {
+        private const val MIN_ADDRESS_LENGTH = 16
+        private const val ADDRESS_THRESHOLD = 8
+
         fun deleteFolderRecursively(file: File): Boolean {
             return try {
                 var res = true
@@ -118,6 +126,22 @@ class AppUtil {
                 list.add(value)
             }
             return list
+        }
+
+        fun maskAddress(address: String): String {
+            var masked = address
+            if (address.length >= MIN_ADDRESS_LENGTH) {
+                masked = address.substring(0, ADDRESS_THRESHOLD) +
+                        "..." +
+                        address.subSequence(address.length - ADDRESS_THRESHOLD, address.length)
+            }
+            return masked
+        }
+
+        fun restart(context: Context) {
+            val intent = Intent(context, MainActivity::class.java).apply { flags = resetStack }
+            context.startActivity(intent)
+            (context as Activity).finishAffinity()
         }
     }
 }

@@ -20,8 +20,10 @@ import app.terraplanet.terraplanet.nav.Screen
 import app.terraplanet.terraplanet.nav.SetupNavGraph
 import app.terraplanet.terraplanet.network.APIServiceImpl
 import app.terraplanet.terraplanet.ui.theme.*
+import app.terraplanet.terraplanet.util.AppUtil
 import app.terraplanet.terraplanet.util.Biometrics
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
 class HomeActivity : FragmentActivity() {
 
@@ -74,6 +76,9 @@ class HomeActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
         api.getWallet(this)
+        api.getStatus()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({}, { AppUtil.restart(this) })
     }
 
     companion object {

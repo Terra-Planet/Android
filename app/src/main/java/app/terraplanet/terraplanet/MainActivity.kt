@@ -32,13 +32,13 @@ import app.terraplanet.terraplanet.ui.util.VSpacer
 import app.terraplanet.terraplanet.ui.util.clearStack
 import app.terraplanet.terraplanet.util.Biometrics.Companion.checkBiometricSupport
 import app.terraplanet.terraplanet.util.bitmapDrawable
-import app.terraplanet.terraplanet.viewmodel.State
+import app.terraplanet.terraplanet.viewmodel.ResultState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-data class LoginState(val state: State, val status: String, val loading: Boolean)
+data class LoginState(val resultState: ResultState, val status: String, val loading: Boolean)
 
 class MainActivity : FragmentActivity() {
-    var status = mutableStateOf(LoginState(State.LOADING, "Server status...", true))
+    var status = mutableStateOf(LoginState(ResultState.LOADING, "Server status...", true))
     val app by lazy { (applicationContext as BaseApplication) }
     val api = APIServiceImpl()
 
@@ -55,7 +55,7 @@ class MainActivity : FragmentActivity() {
         }
 
         app.checkServerStatus({
-            status.value = LoginState(State.LOADING, it, true)
+            status.value = LoginState(ResultState.LOADING, it, true)
         }, { result ->
             serverResult.value = result
             if (result) {
@@ -69,7 +69,7 @@ class MainActivity : FragmentActivity() {
                     goToInitScreen()
                 }
             } else {
-                status.value = LoginState(State.FAILED, "Server failed. Close the app and try again", false)
+                status.value = LoginState(ResultState.FAILED, "Server failed. Close the app and try again", false)
             }
         })
     }
@@ -91,18 +91,18 @@ class MainActivity : FragmentActivity() {
         object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
-                status.value = LoginState(State.SUCCESS, "Auth Successful", false)
+                status.value = LoginState(ResultState.SUCCESS, "Auth Successful", false)
                 goToHomeScreen()
             }
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                status.value = LoginState(State.CANCELLED, "Auth Canceled", false)
+                status.value = LoginState(ResultState.CANCELLED, "Auth Canceled", false)
             }
 
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
-                status.value = LoginState(State.CANCELLED, "Error. Try Again", false)
+                status.value = LoginState(ResultState.CANCELLED, "Error. Try Again", false)
             }
         }
 
@@ -119,7 +119,7 @@ class MainActivity : FragmentActivity() {
             val biometricPrompt = BiometricPrompt(this, mainExecutor, authenticationCallback)
             biometricPrompt.authenticate(biometricPromptInfo)
         } else {
-            status.value = LoginState(State.SUCCESS, "Auth Successful", false)
+            status.value = LoginState(ResultState.SUCCESS, "Auth Successful", false)
             goToHomeScreen()
         }
     }
@@ -150,7 +150,7 @@ private fun LoadingScreen(state: LoginState, onBiometrics: () -> Unit) {
                 Expandable()
                 if (state.loading) {
                     CircularProgressIndicator(color = Color.White)
-                } else if (state.state == State.CANCELLED) {
+                } else if (state.resultState == ResultState.CANCELLED) {
                     IconButton(onClick = { onBiometrics() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_finger),

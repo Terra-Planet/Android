@@ -69,7 +69,7 @@ fun SendModal(
     val wallet = model.walletState.collectAsState()
 
     var coin by remember { mutableStateOf(wallet.value.coins.first()) }
-    var totalBalance by remember { mutableStateOf(if (coin.denom == Denom.LUNA) coin.quantity else coin.amount) }
+    var totalBalance by remember { mutableStateOf(if (coin.isLuna) coin.quantity else coin.amount) }
     fun show() = scope.launch { state.show() }
     fun hide() = scope.launch { state.hide() }
 
@@ -124,7 +124,7 @@ fun SendModal(
                                     text = { Text(wallet.value.coins[it].denom.label, fontWeight = FontWeight.Bold) },
                                     modifier = Modifier.clickable {
                                         coin = wallet.value.coins[it]
-                                        totalBalance = if (coin.denom == Denom.LUNA) coin.quantity else coin.amount
+                                        totalBalance = if (coin.isLuna) coin.quantity else coin.amount
                                         if (amount.valid) {
                                             if (amount.input.toDouble() > totalBalance) {
                                                 amount = ValidInput("$totalBalance", true)
@@ -176,7 +176,7 @@ fun SendModal(
                             color = if (isDark()) Color.Black else Color.White
                         ) {
                             BasicInput(
-                                value = address,
+                                value = AppUtil.maskAddress(address),
                                 onValueChange = { address = it }
                             )
                         }
@@ -268,7 +268,7 @@ fun SendModal(
                                             val fix = if (parsed.startsWith(".")) "0$parsed" else parsed
                                             val isNumber = isNumeric(parsed)
                                             amount = if (isNumber) {
-                                                val maxValue = if (coin.denom == Denom.LUNA) coin.quantity else coin.amount
+                                                val maxValue = if (coin.isLuna) coin.quantity else coin.amount
                                                 val number = fix.parseToDouble()
                                                 ValidInput(fix, number <= maxValue)
                                             } else {
@@ -432,10 +432,10 @@ private fun ShowSwapDialog(
             var haveBalance = false
             send.gasCoin?.let {  fee ->
                 haveBalance = if (send.coin.denom == fee.denom) {
-                    val left = if (fee.denom == Denom.LUNA) fee.quantity - send.amount else fee.amount - send.amount
+                    val left = if (fee.isLuna) fee.quantity - send.amount else fee.amount - send.amount
                     left >= send.fee
                 } else {
-                    val left = if (fee.denom == Denom.LUNA) fee.quantity - send.fee else fee.amount - send.fee
+                    val left = if (fee.isLuna) fee.quantity - send.fee else fee.amount - send.fee
                     left >= send.fee
                 }
             }
